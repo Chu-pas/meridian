@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Meridian Bank</title>
+<link rel="manifest" href="data:application/json,{%22name%22:%22Meridian%22,%22display%22:%22standalone%22}">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1D26;
+    --ink-soft:#132B38;
+    --parchment:#F6F1E7;
+    --parchment-dim:#EDE6D6;
+    --green:#1F7A5C;
+    --green-bright:#2F9E78;
+    --brass:#1C5FD1;
+    --coral:#E2725B;
+    --line: rgba(246,241,231,0.10);
+    --line-strong: rgba(246,241,231,0.18);
+    --text-dim: rgba(246,241,231,0.62);
+    --radius: 18px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background: var(--ink);
+    color: var(--parchment);
+    font-family:'Inter', sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  .amount, .mono{ font-family:'IBM Plex Mono', monospace; font-variant-numeric: tabular-nums; }
+  .display{ font-family:'Fraunces', serif; }
+
+  #app{ max-width:480px; margin:0 auto; min-height:100vh; position:relative; padding-bottom:88px; }
+
+  /* ---------- Auth screens ---------- */
+  .auth-wrap{ padding:48px 24px 24px; min-height:100vh; display:flex; flex-direction:column; }
+  .brand{ display:flex; align-items:center; gap:10px; margin-bottom:56px; }
+  .brand-mark{ width:34px; height:34px; border:1.5px solid var(--brass); border-radius:8px; display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-weight:600; color:var(--brass); font-size:16px; }
+  .brand-name{ font-family:'Fraunces', serif; font-size:19px; letter-spacing:0.02em; }
+
+  .auth-title{ font-family:'Fraunces', serif; font-size:34px; font-weight:500; line-height:1.15; margin-bottom:8px; }
+  .auth-sub{ color:var(--text-dim); font-size:14.5px; margin-bottom:36px; }
+
+  .field{ margin-bottom:16px; }
+  .field label{ display:block; font-size:12.5px; color:var(--text-dim); margin-bottom:7px; text-transform:uppercase; letter-spacing:0.06em; }
+  .field input{
+    width:100%; background:var(--ink-soft); border:1px solid var(--line-strong); color:var(--parchment);
+    padding:14px 15px; border-radius:11px; font-size:15px; font-family:'Inter',sans-serif;
+  }
+  .field input:focus{ outline:none; border-color:var(--brass); }
+  .field input::placeholder{ color:rgba(246,241,231,0.32); }
+
+  .btn{
+    width:100%; padding:15px; border-radius:12px; border:none; font-size:15px; font-weight:600;
+    font-family:'Inter',sans-serif; cursor:pointer; transition:opacity .15s ease, transform .1s ease;
+  }
+  .btn:active{ transform: scale(0.98); }
+  .btn-primary{ background:var(--brass); color:var(--ink); }
+  .btn-primary:disabled{ opacity:0.5; cursor:not-allowed; }
+  .btn-ghost{ background:transparent; color:var(--parchment); border:1px solid var(--line-strong); }
+  .btn-green{ background:var(--green); color:var(--parchment); }
+  .btn-danger{ background:transparent; color:var(--coral); border:1px solid rgba(226,114,91,0.4); }
+
+  .switch-auth{ text-align:center; margin-top:auto; padding-top:32px; color:var(--text-dim); font-size:14px; }
+  .switch-auth a{ color:var(--brass); text-decoration:none; font-weight:600; cursor:pointer; }
+
+  .error-banner{ background:rgba(226,114,91,0.12); border:1px solid rgba(226,114,91,0.35); color:#F0B4A5; padding:11px 14px; border-radius:10px; font-size:13.5px; margin-bottom:16px; }
+  .success-banner{ background:rgba(47,158,120,0.12); border:1px solid rgba(47,158,120,0.35); color:#9AD9C0; padding:11px 14px; border-radius:10px; font-size:13.5px; margin-bottom:16px; }
+
+  /* ---------- App shell ---------- */
+  .topbar{ display:flex; align-items:center; justify-content:space-between; padding:22px 20px 6px; }
+  .greeting{ font-size:13px; color:var(--text-dim); }
+  .greeting strong{ color:var(--parchment); font-weight:600; }
+  .avatar{ width:38px; height:38px; border-radius:50%; background:var(--green); display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-weight:600; font-size:15px; }
+
+  .screen{ padding:16px 20px 20px; display:none; }
+  .screen.active{ display:block; }
+
+  /* passbook balance card - the signature element */
+  .ledger-card{
+    background: linear-gradient(155deg, var(--ink-soft), #0E2129);
+    border:1px solid var(--line-strong);
+    border-radius: var(--radius);
+    padding:26px 22px 22px;
+    margin-top:10px;
+    position:relative;
+    overflow:hidden;
+  }
+  .ledger-card::before{
+    content:""; position:absolute; left:0; top:0; bottom:0; width:14px;
+    background-image: radial-gradient(circle at 7px 0, transparent 5px, var(--ink) 5.5px);
+    background-size: 14px 16px;
+    background-repeat: repeat-y;
+    opacity:0.5;
+  }
+  .ledger-label{ font-size:11.5px; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-dim); margin-left:10px; }
+  .ledger-balance{ font-size:38px; font-weight:600; margin:8px 0 4px 10px; letter-spacing:-0.01em; }
+  .ledger-acct{ font-size:13px; color:var(--text-dim); margin-left:10px; }
+  .ledger-acct span{ color:var(--brass); }
+
+  .quick-actions{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:22px; }
+  .qa-btn{ display:flex; flex-direction:column; align-items:center; gap:8px; background:none; border:none; color:var(--parchment); cursor:pointer; }
+  .qa-icon{ width:52px; height:52px; border-radius:15px; background:var(--ink-soft); border:1px solid var(--line-strong); display:flex; align-items:center; justify-content:center; font-size:20px; }
+  .qa-label{ font-size:11.5px; color:var(--text-dim); }
+
+  .section-head{ display:flex; align-items:center; justify-content:space-between; margin:28px 0 12px; }
+  .section-head h3{ font-family:'Fraunces',serif; font-size:17px; font-weight:500; }
+  .section-head a{ font-size:12.5px; color:var(--brass); text-decoration:none; }
+
+  /* ledger-style transaction rows */
+  .txn-row{ display:flex; align-items:center; gap:12px; padding:13px 0; border-bottom:1px dashed var(--line); }
+  .txn-row:last-child{ border-bottom:none; }
+  .txn-dot{ width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; }
+  .txn-dot.credit{ background:rgba(47,158,120,0.15); color:var(--green-bright); }
+  .txn-dot.debit{ background:rgba(226,114,91,0.15); color:var(--coral); }
+  .txn-info{ flex:1; min-width:0; }
+  .txn-title{ font-size:14px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .txn-date{ font-size:11.5px; color:var(--text-dim); margin-top:2px; }
+  .txn-amt{ font-size:14px; font-weight:600; }
+  .txn-amt.credit{ color:var(--green-bright); }
+  .txn-amt.debit{ color:var(--coral); }
+  .empty-state{ text-align:center; padding:40px 20px; color:var(--text-dim); font-size:13.5px; }
+
+  /* bottom nav */
+  .bottom-nav{ position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:480px; background:rgba(11,29,38,0.92); backdrop-filter: blur(10px); border-top:1px solid var(--line-strong); display:flex; justify-content:space-around; padding:12px 10px 18px; z-index:20; }
+  .nav-btn{ background:none; border:none; color:var(--text-dim); display:flex; flex-direction:column; align-items:center; gap:4px; font-size:10.5px; cursor:pointer; }
+  .nav-btn.active{ color:var(--brass); }
+  .nav-icon{ font-size:19px; }
+
+  /* generic list card / form panels */
+  .panel{ background:var(--ink-soft); border:1px solid var(--line-strong); border-radius:16px; padding:18px; margin-bottom:14px; }
+  .goal-card{ background:var(--ink-soft); border:1px solid var(--line-strong); border-radius:16px; padding:18px; margin-bottom:12px; }
+  .goal-name{ font-size:15px; font-weight:600; margin-bottom:10px; }
+  .progress-track{ height:7px; background:rgba(246,241,231,0.08); border-radius:99px; overflow:hidden; margin-bottom:8px; }
+  .progress-fill{ height:100%; background:var(--green-bright); border-radius:99px; }
+  .goal-figures{ display:flex; justify-content:space-between; font-size:12.5px; color:var(--text-dim); }
+  .goal-figures strong{ color:var(--parchment); }
+
+  .bill-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px; }
+  .bill-tile{ background:var(--ink-soft); border:1px solid var(--line-strong); border-radius:14px; padding:16px 8px; text-align:center; cursor:pointer; font-size:12.5px; }
+  .bill-tile.selected{ border-color:var(--brass); color:var(--brass); }
+  .bill-tile .bi{ font-size:22px; display:block; margin-bottom:6px; }
+
+  .card-visual{ background:linear-gradient(135deg,#132B38,#0B1D26); border:1px solid var(--brass); border-radius:16px; padding:20px; margin-bottom:14px; position:relative; }
+  .card-chip{ width:34px; height:26px; background:linear-gradient(135deg,var(--brass),#0E3A87); border-radius:5px; margin-bottom:22px; }
+  .card-num{ font-family:'IBM Plex Mono',monospace; font-size:16px; letter-spacing:0.08em; margin-bottom:16px; }
+  .card-foot{ display:flex; justify-content:space-between; font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.05em; }
+
+  .modal-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,0.55); display:none; align-items:flex-end; justify-content:center; z-index:50; }
+  .modal-backdrop.active{ display:flex; }
+  .modal-sheet{ background:var(--ink-soft); width:100%; max-width:480px; border-radius:20px 20px 0 0; padding:24px 22px 34px; border-top:1px solid var(--line-strong); }
+  .modal-sheet h3{ font-family:'Fraunces',serif; font-size:19px; margin-bottom:18px; }
+
+  .pin-dots{ display:flex; justify-content:center; gap:14px; margin:24px 0; }
+  .pin-dots .dot{ width:14px; height:14px; border-radius:50%; border:1.5px solid var(--line-strong); }
+  .pin-dots .dot.filled{ background:var(--brass); border-color:var(--brass); }
+  .keypad{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+  .keypad button{ background:var(--ink); border:1px solid var(--line-strong); color:var(--parchment); font-size:19px; padding:16px 0; border-radius:12px; font-family:'IBM Plex Mono',monospace; }
+
+  .stat-row{ display:flex; gap:12px; margin-top:16px; }
+  .stat-box{ flex:1; background:var(--ink-soft); border:1px solid var(--line-strong); border-radius:14px; padding:16px; }
+  .stat-box .label{ font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:6px; }
+  .stat-box .value{ font-size:18px; font-weight:600; }
+
+  ::selection{ background:var(--brass); color:var(--ink); }
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+
+  /* ---------- Landing page: BOA-inspired light theme, scoped ---------- */
+  #screen-landing{
+    --boa-blue:#012169; --boa-blue-deep:#001238; --boa-red:#E31837; --boa-bg:#FFFFFF; --boa-ink:#111827; --boa-dim:#5B6472;
+    background:var(--boa-bg); color:var(--boa-ink); padding:0 !important;
+  }
+  #screen-landing .lp-nav{ display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid #EBEDF0; }
+  #screen-landing .lp-brand{ display:flex; align-items:center; gap:9px; }
+  #screen-landing .lp-brand-mark{ width:32px; height:32px; border-radius:7px; background:var(--boa-blue); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-weight:700; font-size:15px; }
+  #screen-landing .lp-brand-name{ font-family:'Fraunces',serif; font-weight:600; font-size:17px; color:var(--boa-blue); }
+  #screen-landing .lp-links{ display:flex; gap:16px; overflow-x:auto; font-size:12px; color:var(--boa-dim); font-weight:600; }
+  #screen-landing .lp-links span:first-child{ color:var(--boa-blue); }
+
+  #screen-landing .lp-hero{
+    background:linear-gradient(160deg, var(--boa-blue) 0%, var(--boa-blue-deep) 100%);
+    color:#fff; padding:38px 22px 34px; position:relative; overflow:hidden;
+  }
+  #screen-landing .lp-hero::after{
+    content:""; position:absolute; right:-40px; top:-40px; width:220px; height:220px; border-radius:50%;
+    background:radial-gradient(circle, rgba(227,24,55,0.35), transparent 70%);
+  }
+  #screen-landing .lp-hero-eyebrow{ font-size:11.5px; letter-spacing:0.12em; text-transform:uppercase; color:#9FB3E8; font-weight:700; margin-bottom:10px; }
+  #screen-landing .lp-hero h1{ font-family:'Fraunces',serif; font-size:30px; line-height:1.2; font-weight:600; max-width:300px; position:relative; z-index:1; }
+  #screen-landing .lp-hero p{ font-size:14px; color:#C9D4EE; margin-top:12px; max-width:290px; line-height:1.55; position:relative; z-index:1; }
+  #screen-landing .lp-cta-row{ display:flex; gap:10px; margin-top:22px; position:relative; z-index:1; }
+  #screen-landing .lp-btn-primary{ background:var(--boa-red); color:#fff; border:none; padding:13px 22px; border-radius:8px; font-weight:700; font-size:14px; cursor:pointer; }
+  #screen-landing .lp-btn-ghost{ background:transparent; color:#fff; border:1.5px solid rgba(255,255,255,0.5); padding:13px 20px; border-radius:8px; font-weight:600; font-size:14px; cursor:pointer; }
+
+  #screen-landing .lp-card-graphic{ position:relative; z-index:1; margin-top:26px; width:190px; }
+
+  /* horizontal stat strip */
+  #screen-landing .lp-stats{ display:flex; overflow-x:auto; gap:0; border-bottom:1px solid #EBEDF0; }
+  #screen-landing .lp-stat{ flex:0 0 auto; min-width:130px; padding:18px 20px; border-right:1px solid #EBEDF0; }
+  #screen-landing .lp-stat .num{ font-family:'IBM Plex Mono',monospace; font-size:20px; font-weight:600; color:var(--boa-blue); }
+  #screen-landing .lp-stat .label{ font-size:11px; color:var(--boa-dim); margin-top:4px; }
+
+  /* horizontal-scrolling feature strip */
+  #screen-landing .lp-section-title{ font-family:'Fraunces',serif; font-size:20px; font-weight:600; padding:28px 20px 4px; color:var(--boa-ink); }
+  #screen-landing .lp-section-sub{ font-size:13px; color:var(--boa-dim); padding:0 20px 16px; }
+  #screen-landing .lp-feature-row{ display:flex; gap:14px; overflow-x:auto; padding:0 20px 8px; scroll-snap-type:x mandatory; }
+  #screen-landing .lp-feature-card{ flex:0 0 auto; width:170px; scroll-snap-align:start; background:#F7F9FC; border:1px solid #EBEDF0; border-radius:14px; padding:18px; }
+  #screen-landing .lp-feature-icon{ width:38px; height:38px; border-radius:9px; background:var(--boa-blue); display:flex; align-items:center; justify-content:center; margin-bottom:14px; }
+  #screen-landing .lp-feature-card h4{ font-size:14px; font-weight:700; margin-bottom:5px; color:var(--boa-ink); }
+  #screen-landing .lp-feature-card p{ font-size:12px; color:var(--boa-dim); line-height:1.5; }
+
+  #screen-landing .lp-footer-cta{ background:#F7F9FC; margin:30px 0 0; padding:32px 22px 40px; text-align:center; }
+  #screen-landing .lp-footer-cta h3{ font-family:'Fraunces',serif; font-size:22px; color:var(--boa-blue); margin-bottom:10px; }
+  #screen-landing .lp-footer-cta p{ font-size:13px; color:var(--boa-dim); margin-bottom:20px; }
+
+  #screen-landing .lp-eyebrow-tag{ text-align:center; padding-top:36px; }
+  #screen-landing .lp-eyebrow-tag .dash{ width:36px; height:3px; background:var(--boa-red); border-radius:2px; margin:0 auto 14px; }
+  #screen-landing .lp-eyebrow-tag .tag{ font-size:11.5px; font-weight:700; letter-spacing:0.1em; color:var(--boa-red); text-transform:uppercase; }
+  #screen-landing .lp-eyebrow-tag h2{ font-family:'Fraunces',serif; font-size:26px; font-weight:700; color:var(--boa-ink); margin-top:6px; }
+
+  #screen-landing .lp-service{ display:flex; gap:16px; padding:20px; margin:16px 20px 0; background:#F7F9FC; border:1px solid #EBEDF0; border-radius:16px; }
+  #screen-landing .lp-service-icon{ width:56px; height:56px; flex-shrink:0; border-radius:50%; background:var(--boa-blue); display:flex; align-items:center; justify-content:center; }
+  #screen-landing .lp-service h4{ font-family:'Fraunces',serif; font-size:17px; font-weight:600; color:var(--boa-ink); margin-bottom:6px; }
+  #screen-landing .lp-service p{ font-size:13px; color:var(--boa-dim); line-height:1.55; }
+
+  #screen-landing .lp-news-card{ display:flex; gap:14px; padding:14px 20px; align-items:center; }
+  #screen-landing .lp-news-thumb{ width:78px; height:78px; flex-shrink:0; border-radius:12px; background:linear-gradient(135deg, var(--boa-blue), #24418E); display:flex; align-items:center; justify-content:center; }
+  #screen-landing .lp-news-date{ display:inline-block; background:#F5A623; color:#fff; font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:20px; margin-bottom:6px; }
+  #screen-landing .lp-news-card h5{ font-size:13.5px; font-weight:700; color:var(--boa-ink); line-height:1.4; }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ============ LANDING ============ -->
+  <div class="screen active" id="screen-landing">
+    <div class="lp-nav">
+      <div class="lp-brand"><div class="lp-brand-mark">M</div><div class="lp-brand-name">Meridian</div></div>
+      <div class="lp-links">
+        <span>Home</span><span>Banking</span><span>Cards</span><span>Support</span>
+      </div>
+    </div>
+
+    <div class="lp-hero">
+      <div class="lp-hero-eyebrow">Personal Banking</div>
+      <h1>What would you like the power to do?</h1>
+      <p>Checking, savings, cards and bill pay — everything you need to manage your money, in one account.</p>
+      <div class="lp-cta-row">
+        <button class="lp-btn-primary" onclick="showScreen('screen-signup')">Open an account</button>
+        <button class="lp-btn-ghost" onclick="showScreen('screen-login')">Log in</button>
+      </div>
+
+      <svg class="lp-card-graphic" viewBox="0 0 300 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="20" width="280" height="150" rx="16" fill="#001A4D" stroke="#3E5B9E" stroke-width="1"/>
+        <rect x="30" y="50" width="42" height="30" rx="5" fill="#E31837"/>
+        <rect x="30" y="120" width="140" height="10" rx="5" fill="#7B93C9"/>
+        <rect x="30" y="140" width="90" height="8" rx="4" fill="#4A6099"/>
+        <text x="252" y="150" fill="#fff" font-family="Fraunces, serif" font-size="16" font-weight="600" text-anchor="end">M</text>
+      </svg>
+    </div>
+
+    <div class="lp-stats">
+      <div class="lp-stat"><div class="num">2.4M+</div><div class="label">Accounts opened</div></div>
+      <div class="lp-stat"><div class="num">99.9%</div><div class="label">Uptime</div></div>
+      <div class="lp-stat"><div class="num">4.8/5</div><div class="label">Customer rating</div></div>
+      <div class="lp-stat"><div class="num">24/7</div><div class="label">Support</div></div>
+    </div>
+
+    <div class="lp-section-title">Everything in one place</div>
+    <div class="lp-section-sub">Swipe to see what's included with your account.</div>
+    <div class="lp-feature-row">
+      <div class="lp-feature-card">
+        <div class="lp-feature-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M7 17l5-5 5 5M7 7l5 5 5-5"/></svg></div>
+        <h4>Instant transfers</h4>
+        <p>Send and receive money in seconds, to anyone, anytime.</p>
+      </div>
+      <div class="lp-feature-card">
+        <div class="lp-feature-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+        <h4>Savings goals</h4>
+        <p>Set a target, fund it from your balance, and track progress.</p>
+      </div>
+      <div class="lp-feature-card">
+        <div class="lp-feature-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></div>
+        <h4>Virtual cards</h4>
+        <p>Fund a card instantly and spend safely online.</p>
+      </div>
+      <div class="lp-feature-card">
+        <div class="lp-feature-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg></div>
+        <h4>Bill payments</h4>
+        <p>Electricity, cable, water and more — paid in a tap.</p>
+      </div>
+      <div class="lp-feature-card">
+        <div class="lp-feature-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M3 12l2-2 4 4 8-8 2 2"/></svg></div>
+        <h4>Full statements</h4>
+        <p>See every transaction with running totals, anytime.</p>
+      </div>
+    </div>
+
+    <div class="lp-eyebrow-tag">
+      <div class="dash"></div>
+      <div class="tag">Take a look at our</div>
+      <h2>Our services</h2>
+    </div>
+
+    <div class="lp-service">
+      <div class="lp-service-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 18h6"/></svg></div>
+      <div><h4>Mobile Pay</h4><p>Pay directly from your phone — scan, tap, or send, wherever you are.</p></div>
+    </div>
+    <div class="lp-service">
+      <div class="lp-service-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M2 10h20"/></svg></div>
+      <div><h4>Dynamic Pay</h4><p>Small businesses improve cash flow with flexible, on-demand payouts.</p></div>
+    </div>
+    <div class="lp-service">
+      <div class="lp-service-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="9"/></svg></div>
+      <div><h4>Entrepreneurs</h4><p>Growth-stage support for founders — built for businesses on the move.</p></div>
+    </div>
+    <div class="lp-service">
+      <div class="lp-service-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="12" cy="12" r="3"/></svg></div>
+      <div><h4>Empire Choice</h4><p>An arranged overdraft plus a debit card that doubles as a cash card.</p></div>
+    </div>
+    <div class="lp-service">
+      <div class="lp-service-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 2l2.9 6.6 7.1.7-5.3 4.9 1.6 7-6.3-3.7-6.3 3.7 1.6-7-5.3-4.9 7.1-.7z"/></svg></div>
+      <div><h4>Responsibility</h4><p>How we work responsibly toward customers and contribute to society.</p></div>
+    </div>
+
+    <div class="lp-eyebrow-tag">
+      <div class="dash"></div>
+      <div class="tag">Stay informed</div>
+      <h2>The news</h2>
+    </div>
+
+    <div class="lp-news-card">
+      <div class="lp-news-thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M18 3l-6 6-4-4-6 6"/></svg></div>
+      <div><span class="lp-news-date">Jul 18, 2026</span><h5>How to get the best loan online</h5></div>
+    </div>
+    <div class="lp-news-card">
+      <div class="lp-news-thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V4h8v3"/></svg></div>
+      <div><span class="lp-news-date">Jul 18, 2026</span><h5>A new way to finance your dream home</h5></div>
+    </div>
+    <div class="lp-news-card">
+      <div class="lp-news-thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0116 0v1"/></svg></div>
+      <div><span class="lp-news-date">Jul 18, 2026</span><h5>10 tips to get the best loan for you</h5></div>
+    </div>
+
+    <div class="lp-footer-cta">
+      <h3>Banking made simple.</h3>
+      <p>Open an account in under a minute. No paperwork, no branch visit.</p>
+      <button class="lp-btn-primary" onclick="showScreen('screen-signup')">Get started</button>
+    </div>
+  </div>
+
+  <!-- ============ LOGIN ============ -->
+  <div class="screen" id="screen-login">
+    <div class="auth-wrap">
+      <div class="brand"><div class="brand-mark">M</div><div class="brand-name">Meridian</div></div>
+      <div class="auth-title">Welcome back.</div>
+      <div class="auth-sub">Log in to check your balance and move money.</div>
+      <div id="login-error"></div>
+      <div class="field"><label>Email</label><input type="email" id="login-email" placeholder="you@email.com"></div>
+      <div class="field"><label>Password</label><input type="password" id="login-password" placeholder="••••••••"></div>
+      <button class="btn btn-primary" id="login-btn" onclick="handleLogin()">Log in</button>
+      <div class="switch-auth">New here? <a onclick="showScreen('screen-signup')">Create an account</a></div>
+    </div>
+  </div>
+
+  <!-- ============ SIGNUP ============ -->
+  <div class="screen" id="screen-signup">
+    <div class="auth-wrap">
+      <div class="brand"><div class="brand-mark">M</div><div class="brand-name">Meridian</div></div>
+      <div class="auth-title">Open your account.</div>
+      <div class="auth-sub">A few details so we can set your account up properly.</div>
+      <div id="signup-error"></div>
+
+      <div style="font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--brass); margin:18px 0 4px;">Personal details</div>
+      <div class="field"><label>Full name</label><input type="text" id="su-name" placeholder="Chidinma Okafor"></div>
+      <div class="field"><label>Date of birth</label><input type="date" id="su-dob"></div>
+      <div class="field"><label>Email</label><input type="email" id="su-email" placeholder="you@email.com"></div>
+      <div class="field"><label>Phone number</label><input type="tel" id="su-phone" placeholder="0803 000 0000"></div>
+      <div class="field"><label>Occupation</label><input type="text" id="su-occupation" placeholder="e.g. Software Developer"></div>
+
+      <div style="font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--brass); margin:18px 0 4px;">Home address</div>
+      <div class="field"><label>Street address</label><input type="text" id="su-address" placeholder="12 Adeola Odeku Street"></div>
+      <div class="field"><label>City</label><input type="text" id="su-city" placeholder="Lagos"></div>
+      <div class="field"><label>State / Province</label><input type="text" id="su-state" placeholder="Lagos State"></div>
+      <div class="field"><label>Postal code</label><input type="text" id="su-postal" placeholder="100001"></div>
+
+      <div style="font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--brass); margin:18px 0 4px;">Next of kin</div>
+      <div class="field"><label>Full name</label><input type="text" id="su-nok-name" placeholder="Next of kin's name"></div>
+      <div class="field"><label>Relationship</label><input type="text" id="su-nok-relationship" placeholder="e.g. Sister, Spouse, Father"></div>
+      <div class="field"><label>Phone number</label><input type="tel" id="su-nok-phone" placeholder="0803 000 0000"></div>
+
+      <div style="font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--brass); margin:18px 0 4px;">Security</div>
+      <div class="field"><label>Password</label><input type="password" id="su-password" placeholder="At least 6 characters"></div>
+
+      <button class="btn btn-primary" id="signup-btn" onclick="handleSignup()">Create account</button>
+      <div class="switch-auth">Already have an account? <a onclick="showScreen('screen-login')">Log in</a></div>
+    </div>
+  </div>
+
+  <!-- ============ DASHBOARD ============ -->
+  <div class="screen" id="screen-dashboard">
+    <div class="topbar">
+      <div class="greeting">Good to see you,<br><strong id="dash-name">—</strong></div>
+      <div class="avatar" id="dash-avatar">—</div>
+    </div>
+    <div style="padding:0 20px;">
+      <div class="ledger-card">
+        <div class="ledger-label">Checking Account</div>
+        <div class="ledger-balance amount" id="dash-balance">$0.00</div>
+        <div class="ledger-acct">Acct No. <span id="dash-acct">—</span></div>
+      </div>
+
+      <button class="btn btn-green" style="margin-top:14px;" onclick="openFundModal()">+ Fund Wallet</button>
+
+      <div class="quick-actions">
+        <button class="qa-btn" onclick="openTransferModal()"><div class="qa-icon">↗</div><div class="qa-label">Send</div></button>
+        <button class="qa-btn" onclick="showScreen('screen-savings')"><div class="qa-icon">🪙</div><div class="qa-label">Save</div></button>
+        <button class="qa-btn" onclick="showScreen('screen-bills')"><div class="qa-icon">🧾</div><div class="qa-label">Bills</div></button>
+        <button class="qa-btn" onclick="showScreen('screen-cards')"><div class="qa-icon">💳</div><div class="qa-label">Cards</div></button>
+      </div>
+
+      <div class="section-head"><h3>Recent activity</h3><a onclick="showScreen('screen-history')">See all</a></div>
+      <div id="dash-recent-txns"><div class="empty-state">No transactions yet.</div></div>
+    </div>
+  </div>
+
+  <!-- ============ SAVINGS ============ -->
+  <div class="screen" id="screen-savings">
+    <div class="topbar"><div class="greeting"><strong>Savings goals</strong></div><div></div></div>
+    <div style="padding:0 20px;">
+      <div id="error-savings"></div>
+      <button class="btn btn-green" style="margin-bottom:18px;" onclick="openModal('modal-new-goal')">+ New goal</button>
+      <div id="goals-list"><div class="empty-state">No savings goals yet. Start one above.</div></div>
+    </div>
+  </div>
+
+  <!-- ============ BILLS ============ -->
+  <div class="screen" id="screen-bills">
+    <div class="topbar"><div class="greeting"><strong>Pay a bill</strong></div><div></div></div>
+    <div style="padding:0 20px;">
+      <div id="error-bills"></div>
+      <div class="bill-grid">
+        <div class="bill-tile" data-type="PHCN" onclick="selectBillType(this)"><span class="bi">💡</span>Electricity</div>
+        <div class="bill-tile" data-type="DSTV" onclick="selectBillType(this)"><span class="bi">📺</span>Cable TV</div>
+        <div class="bill-tile" data-type="DATA" onclick="selectBillType(this)"><span class="bi">📶</span>Data</div>
+        <div class="bill-tile" data-type="WATER" onclick="selectBillType(this)"><span class="bi">🚰</span>Water</div>
+        <div class="bill-tile" data-type="OTHER" onclick="selectBillType(this)"><span class="bi">➕</span>Other</div>
+      </div>
+      <div class="panel">
+        <div class="field"><label>Biller name</label><input type="text" id="bill-biller" placeholder="e.g. MTN, IKEDC, DSTV"></div>
+        <div class="field"><label>Phone / meter / smartcard number</label><input type="text" id="bill-customer" placeholder="Customer ID"></div>
+        <div class="field"><label>Amount ($)</label><input type="number" id="bill-amount" placeholder="0.00"></div>
+        <button class="btn btn-primary" onclick="handlePayBill()">Pay bill</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ CARDS ============ -->
+  <div class="screen" id="screen-cards">
+    <div class="topbar"><div class="greeting"><strong>Virtual cards</strong></div><div></div></div>
+    <div style="padding:0 20px;">
+      <div id="error-cards"></div>
+      <div id="cards-list"></div>
+      <div class="panel">
+        <div class="field"><label>Fund card with ($)</label><input type="number" id="card-amount" placeholder="Minimum $500"></div>
+        <button class="btn btn-primary" onclick="handleCreateCard()">Request virtual card</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ HISTORY / STATEMENT ============ -->
+  <div class="screen" id="screen-history">
+    <div class="topbar"><div class="greeting"><strong>Transactions</strong></div><div></div></div>
+    <div style="padding:0 20px;">
+      <div class="stat-row">
+        <div class="stat-box"><div class="label">Money in</div><div class="value mono" id="stat-in">$0</div></div>
+        <div class="stat-box"><div class="label">Money out</div><div class="value mono" id="stat-out">$0</div></div>
+      </div>
+      <div class="section-head"><h3>Full history</h3></div>
+      <div id="history-list"><div class="empty-state">No transactions yet.</div></div>
+    </div>
+  </div>
+
+  <!-- ============ SETTINGS ============ -->
+  <div class="screen" id="screen-settings">
+    <div class="topbar"><div class="greeting"><strong>Settings</strong></div><div></div></div>
+    <div style="padding:0 20px;">
+      <div class="panel">
+        <div class="field"><label>Full name</label><input type="text" id="set-name" disabled></div>
+        <div class="field"><label>Email</label><input type="text" id="set-email" disabled></div>
+        <div class="field"><label>Account number</label><input type="text" id="set-acct" disabled></div>
+      </div>
+      <button class="btn btn-ghost" style="margin-bottom:12px;" onclick="openModal('modal-set-pin')">Set / change transaction PIN</button>
+      <button class="btn btn-danger" onclick="handleLogout()">Log out</button>
+    </div>
+  </div>
+
+  <!-- bottom nav, only visible once logged in -->
+  <div class="bottom-nav" id="bottom-nav" style="display:none;">
+    <button class="nav-btn active" data-screen="screen-dashboard" onclick="navTo('screen-dashboard')"><div class="nav-icon">🏠</div>Home</button>
+    <button class="nav-btn" data-screen="screen-savings" onclick="navTo('screen-savings')"><div class="nav-icon">🪙</div>Save</button>
+    <button class="nav-btn" data-screen="screen-bills" onclick="navTo('screen-bills')"><div class="nav-icon">🧾</div>Bills</button>
+    <button class="nav-btn" data-screen="screen-cards" onclick="navTo('screen-cards')"><div class="nav-icon">💳</div>Cards</button>
+    <button class="nav-btn" data-screen="screen-settings" onclick="navTo('screen-settings')"><div class="nav-icon">⚙️</div>More</button>
+  </div>
+
+</div>
+
+<!-- ============ MODALS ============ -->
+
+<div class="modal-backdrop" id="modal-fund">
+  <div class="modal-sheet">
+    <h3>Fund your wallet</h3>
+    <div id="error-fund"></div>
+    <div class="field"><label>Amount ($)</label><input type="number" id="fund-amount" placeholder="Minimum $1"></div>
+    <button class="btn btn-primary" onclick="submitFund()">Continue to payment</button>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modal-transfer">
+  <div class="modal-sheet">
+    <h3>Send money</h3>
+    <div id="error-transfer"></div>
+    <div class="field">
+      <label>Send to</label>
+      <select id="transfer-type" onchange="toggleTransferFields()" style="width:100%; background:var(--ink); border:1px solid var(--line-strong); color:var(--parchment); padding:14px 15px; border-radius:11px; font-size:15px;">
+        <option value="internal">Another Meridian account</option>
+        <option value="external">External bank account</option>
+      </select>
+    </div>
+    <div class="field" id="ext-bank-field" style="display:none;"><label>Bank code</label><input type="text" id="transfer-bankcode" placeholder="e.g. 044 for Access Bank"></div>
+    <div class="field"><label>Account number</label><input type="text" id="transfer-account" placeholder="10-digit account number"></div>
+    <div class="field"><label>Amount ($)</label><input type="number" id="transfer-amount" placeholder="0.00"></div>
+    <div class="field"><label>Note (optional)</label><input type="text" id="transfer-note" placeholder="What's this for?"></div>
+    <button class="btn btn-primary" onclick="submitTransfer()">Continue</button>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modal-new-goal">
+  <div class="modal-sheet">
+    <h3>New savings goal</h3>
+    <div class="field"><label>Goal name</label><input type="text" id="goal-name" placeholder="e.g. New laptop"></div>
+    <div class="field"><label>Target amount ($)</label><input type="number" id="goal-target" placeholder="0.00"></div>
+    <div class="field"><label>Target date (optional)</label><input type="date" id="goal-date"></div>
+    <button class="btn btn-primary" onclick="handleCreateGoal()">Create goal</button>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modal-fund-goal">
+  <div class="modal-sheet">
+    <h3>Add to goal</h3>
+    <div class="field"><label>Amount ($)</label><input type="number" id="fund-goal-amount" placeholder="0.00"></div>
+    <button class="btn btn-primary" onclick="submitFundGoal()">Add funds</button>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modal-set-pin">
+  <div class="modal-sheet">
+    <h3>Set your 4-digit transaction PIN</h3>
+    <div class="pin-dots" id="pin-dots">
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+    <div class="keypad" id="pin-keypad"></div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modal-enter-pin">
+  <div class="modal-sheet">
+    <h3>Enter your PIN to confirm</h3>
+    <div class="pin-dots" id="confirm-pin-dots">
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+    <div class="keypad" id="confirm-pin-keypad"></div>
+  </div>
+</div>
+
+<script>
+/* =========================================================================
+   Meridian — frontend app logic
+   Talks to the Express API in /backend. Change API_BASE once you deploy
+   the backend somewhere (Render, Railway, etc.)
+   ========================================================================= */
+
+const API_BASE = "http://127.0.0.1:5000/api";
+
+let state = {
+  token: localStorage.getItem("ledger_token") || null,
+  user: JSON.parse(localStorage.getItem("ledger_user") || "null"),
+  selectedBillType: null,
+  pendingGoalId: null,
+  pinBuffer: "",
+  pinMode: null, // "set" or "confirm"
+  pendingAction: null,
+};
+
+function fmtNaira(n) {
+  return "$" + Number(n || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function fmtDate(iso) {
+  const d = new Date(iso);
+  return d.toLocaleDateString("en-NG", { day: "numeric", month: "short" }) + " · " +
+         d.toLocaleTimeString("en-NG", { hour: "2-digit", minute: "2-digit" });
+}
+
+async function api(path, options = {}) {
+  const headers = { "Content-Type": "application/json", ...(options.headers || {}) };
+  if (state.token) headers["Authorization"] = `Bearer ${state.token}`;
+
+  const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
+  const data = await res.json().catch(() => ({}));
+
+  if (!res.ok) throw new Error(data.error || "Something went wrong.");
+  return data;
+}
+
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach((s) => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+function navTo(id) {
+  showScreen(id);
+  document.querySelectorAll(".nav-btn").forEach((b) => b.classList.toggle("active", b.dataset.screen === id));
+  if (id === "screen-savings") loadGoals();
+  if (id === "screen-cards") loadCards();
+  if (id === "screen-history") loadHistory();
+  if (id === "screen-settings") loadSettings();
+}
+
+function openModal(id) { document.getElementById(id).classList.add("active"); }
+function closeModal(id) { document.getElementById(id).classList.remove("active"); }
+document.querySelectorAll(".modal-backdrop").forEach((m) => {
+  m.addEventListener("click", (e) => { if (e.target === m) m.classList.remove("active"); });
+});
+
+function showError(elId, message) {
+  document.getElementById(elId).innerHTML = `<div class="error-banner">${message}</div>`;
+}
+function clearError(elId) {
+  const el = document.getElementById(elId);
+  if (el) el.innerHTML = "";
+}
+
+/* ---------------- Auth ---------------- */
+
+async function handleLogin() {
+  clearError("login-error");
+  const email = document.getElementById("login-email").value.trim();
+  const password = document.getElementById("login-password").value;
+  const btn = document.getElementById("login-btn");
+  btn.disabled = true; btn.textContent = "Logging in…";
+  try {
+    const data = await api("/auth/login", { method: "POST", body: JSON.stringify({ email, password }) });
+    setSession(data.token, data.user);
+    enterApp();
+  } catch (err) {
+    showError("login-error", err.message);
+  } finally {
+    btn.disabled = false; btn.textContent = "Log in";
+  }
+}
+
+async function handleSignup() {
+  clearError("signup-error");
+  const fullName = document.getElementById("su-name").value.trim();
+  const dob = document.getElementById("su-dob").value;
+  const email = document.getElementById("su-email").value.trim();
+  const phone = document.getElementById("su-phone").value.trim();
+  const occupation = document.getElementById("su-occupation").value.trim();
+  const address = document.getElementById("su-address").value.trim();
+  const city = document.getElementById("su-city").value.trim();
+  const state_ = document.getElementById("su-state").value.trim();
+  const postalCode = document.getElementById("su-postal").value.trim();
+  const nokName = document.getElementById("su-nok-name").value.trim();
+  const nokRelationship = document.getElementById("su-nok-relationship").value.trim();
+  const nokPhone = document.getElementById("su-nok-phone").value.trim();
+  const password = document.getElementById("su-password").value;
+  const btn = document.getElementById("signup-btn");
+  btn.disabled = true; btn.textContent = "Creating account…";
+  try {
+    const data = await api("/auth/signup", { method: "POST", body: JSON.stringify({
+      fullName, dob, email, phone, occupation, address, city, state: state_, postalCode,
+      nokName, nokRelationship, nokPhone, password
+    }) });
+    setSession(data.token, data.user);
+    enterApp();
+    openModal("modal-set-pin");
+    startPinFlow("set");
+  } catch (err) {
+    showError("signup-error", err.message);
+  } finally {
+    btn.disabled = false; btn.textContent = "Create account";
+  }
+}
+
+function setSession(token, user) {
+  state.token = token;
+  state.user = user;
+  localStorage.setItem("ledger_token", token);
+  localStorage.setItem("ledger_user", JSON.stringify(user));
+}
+
+function handleLogout() {
+  localStorage.removeItem("ledger_token");
+  localStorage.removeItem("ledger_user");
+  state.token = null; state.user = null;
+  document.getElementById("bottom-nav").style.display = "none";
+  showScreen("screen-login");
+}
+
+function enterApp() {
+  document.getElementById("bottom-nav").style.display = "flex";
+  document.getElementById("dash-name").textContent = state.user.fullName.split(" ")[0];
+  document.getElementById("dash-avatar").textContent = state.user.fullName.charAt(0).toUpperCase();
+  document.getElementById("dash-acct").textContent = state.user.accountNumber;
+  document.getElementById("dash-balance").textContent = fmtNaira(state.user.balance);
+  navTo("screen-dashboard");
+  refreshBalance();
+  loadRecentTxns();
+}
+
+async function refreshBalance() {
+  try {
+    const data = await api("/wallet/balance");
+    state.user.balance = data.balance;
+    localStorage.setItem("ledger_user", JSON.stringify(state.user));
+    document.getElementById("dash-balance").textContent = fmtNaira(data.balance);
+  } catch (err) { /* silent - balance will refresh next load */ }
+}
+
+/* ---------------- Dashboard / transactions ---------------- */
+
+function renderTxnRow(t) {
+  const isCredit = t.type === "credit";
+  return `
+    <div class="txn-row">
+      <div class="txn-dot ${t.type}">${isCredit ? "↓" : "↑"}</div>
+      <div class="txn-info">
+        <div class="txn-title">${t.counterparty || t.category}</div>
+        <div class="txn-date">${fmtDate(t.createdAt)}</div>
+      </div>
+      <div class="txn-amt ${t.type} amount">${isCredit ? "+" : "-"}${fmtNaira(t.amount)}</div>
+    </div>`;
+}
+
+async function loadRecentTxns() {
+  try {
+    const txns = await api("/transactions");
+    const container = document.getElementById("dash-recent-txns");
+    if (!txns.length) { container.innerHTML = '<div class="empty-state">No transactions yet.</div>'; return; }
+    container.innerHTML = txns.slice(0, 5).map(renderTxnRow).join("");
+  } catch (err) { /* silent */ }
+}
+
+async function loadHistory() {
+  try {
+    const stmt = await api("/transactions/statement");
+    document.getElementById("stat-in").textContent = fmtNaira(stmt.totalIn);
+    document.getElementById("stat-out").textContent = fmtNaira(stmt.totalOut);
+    const container = document.getElementById("history-list");
+    if (!stmt.transactions.length) { container.innerHTML = '<div class="empty-state">No transactions yet.</div>'; return; }
+    container.innerHTML = stmt.transactions.map(renderTxnRow).join("");
+  } catch (err) { /* silent */ }
+}
+
+/* ---------------- Transfers ---------------- */
+
+/* ---------------- Fund wallet ---------------- */
+
+function openFundModal() {
+  document.getElementById("fund-amount").value = "";
+  clearError("error-fund");
+  openModal("modal-fund");
+}
+
+async function submitFund() {
+  clearError("error-fund");
+  const amount = document.getElementById("fund-amount").value;
+  if (!amount || Number(amount) < 1) {
+    showError("error-fund", "Enter at least $1.");
+    return;
+  }
+  try {
+    const redirectBase = window.location.origin + window.location.pathname;
+    const data = await api("/wallet/fund/initiate", { method: "POST", body: JSON.stringify({ amount, redirectBase }) });
+    window.location.href = data.link;
+  } catch (err) {
+    showError("error-fund", err.message);
+  }
+}
+
+// If we've just been redirected back from Flutterwave after a payment,
+// confirm it with our backend and update the balance
+async function checkPendingFund() {
+  const params = new URLSearchParams(window.location.search);
+  const reference = params.get("fund_ref");
+  if (!reference) return;
+
+  try {
+    const data = await api(`/wallet/fund/verify?reference=${encodeURIComponent(reference)}`);
+    await refreshBalance();
+    await loadRecentTxns();
+    alert(`Wallet funded! New balance: ${fmtNaira(data.newBalance)}`);
+  } catch (err) {
+    alert(`Funding check: ${err.message}`);
+  } finally {
+    // clean the URL so a page refresh doesn't re-trigger this
+    window.history.replaceState({}, "", window.location.pathname);
+  }
+}
+
+function openTransferModal() {
+  document.getElementById("transfer-account").value = "";
+  document.getElementById("transfer-amount").value = "";
+  document.getElementById("transfer-note").value = "";
+  document.getElementById("transfer-bankcode").value = "";
+  clearError("error-transfer");
+  openModal("modal-transfer");
+}
+
+function toggleTransferFields() {
+  const type = document.getElementById("transfer-type").value;
+  document.getElementById("ext-bank-field").style.display = type === "external" ? "block" : "none";
+}
+
+function submitTransfer() {
+  clearError("error-transfer");
+  const type = document.getElementById("transfer-type").value;
+  const account = document.getElementById("transfer-account").value.trim();
+  const amount = document.getElementById("transfer-amount").value;
+  const note = document.getElementById("transfer-note").value.trim();
+  const bankCode = document.getElementById("transfer-bankcode").value.trim();
+
+  if (!account || !amount || Number(amount) <= 0) {
+    showError("error-transfer", "Fill in the account number and a valid amount.");
+    return;
+  }
+
+  state.pendingAction = { kind: "transfer", type, account, amount, note, bankCode };
+  closeModal("modal-transfer");
+  openModal("modal-enter-pin");
+  startPinFlow("confirm");
+}
+
+async function runPendingTransfer(pin) {
+  const { type, account, amount, note, bankCode } = state.pendingAction;
+  const path = type === "internal" ? "/wallet/transfer/internal" : "/wallet/transfer/external";
+  const body = type === "internal"
+    ? { toAccountNumber: account, amount, pin, note }
+    : { accountNumber: account, bankCode, amount, pin, note };
+
+  const data = await api(path, { method: "POST", body: JSON.stringify(body) });
+  await refreshBalance();
+  await loadRecentTxns();
+  return data;
+}
+
+/* ---------------- Savings ---------------- */
+
+async function loadGoals() {
+  try {
+    const goals = await api("/savings");
+    const container = document.getElementById("goals-list");
+    if (!goals.length) { container.innerHTML = '<div class="empty-state">No savings goals yet. Start one above.</div>'; return; }
+    container.innerHTML = goals.map((g) => {
+      const pct = Math.min(100, Math.round((g.savedAmount / g.targetAmount) * 100));
+      return `
+        <div class="goal-card">
+          <div class="goal-name">${g.name}</div>
+          <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+          <div class="goal-figures"><span><strong>${fmtNaira(g.savedAmount)}</strong> saved</span><span>of ${fmtNaira(g.targetAmount)}</span></div>
+          <button class="btn btn-ghost" style="margin-top:12px;" onclick="openFundGoal('${g.id}')">Add money</button>
+        </div>`;
+    }).join("");
+  } catch (err) {
+    showError("error-savings", err.message);
+  }
+}
+
+async function handleCreateGoal() {
+  const name = document.getElementById("goal-name").value.trim();
+  const targetAmount = document.getElementById("goal-target").value;
+  const targetDate = document.getElementById("goal-date").value;
+  if (!name || !targetAmount) return;
+  try {
+    await api("/savings", { method: "POST", body: JSON.stringify({ name, targetAmount, targetDate }) });
+    closeModal("modal-new-goal");
+    document.getElementById("goal-name").value = "";
+    document.getElementById("goal-target").value = "";
+    loadGoals();
+  } catch (err) {
+    showError("error-savings", err.message);
+  }
+}
+
+function openFundGoal(goalId) {
+  state.pendingGoalId = goalId;
+  document.getElementById("fund-goal-amount").value = "";
+  openModal("modal-fund-goal");
+}
+
+async function submitFundGoal() {
+  const amount = document.getElementById("fund-goal-amount").value;
+  if (!amount || Number(amount) <= 0) return;
+  try {
+    await api(`/savings/${state.pendingGoalId}/fund`, { method: "POST", body: JSON.stringify({ amount }) });
+    closeModal("modal-fund-goal");
+    await refreshBalance();
+    loadGoals();
+  } catch (err) {
+    showError("error-savings", err.message);
+  }
+}
+
+/* ---------------- Bills ---------------- */
+
+function selectBillType(el) {
+  document.querySelectorAll(".bill-tile").forEach((t) => t.classList.remove("selected"));
+  el.classList.add("selected");
+  state.selectedBillType = el.dataset.type;
+}
+
+async function handlePayBill() {
+  clearError("error-bills");
+  const billerName = document.getElementById("bill-biller").value.trim();
+  const customer = document.getElementById("bill-customer").value.trim();
+  const amount = document.getElementById("bill-amount").value;
+
+  if (!state.selectedBillType) { showError("error-bills", "Choose a bill category above."); return; }
+  if (!billerName || !customer || !amount) { showError("error-bills", "Fill in every field."); return; }
+
+  try {
+    await api("/bills/pay", { method: "POST", body: JSON.stringify({ type: state.selectedBillType, billerName, customer, amount }) });
+    document.getElementById("bill-biller").value = "";
+    document.getElementById("bill-customer").value = "";
+    document.getElementById("bill-amount").value = "";
+    await refreshBalance();
+    showError("error-bills", ""); // clear
+    document.getElementById("error-bills").innerHTML = '<div class="success-banner">Payment successful.</div>';
+  } catch (err) {
+    showError("error-bills", err.message);
+  }
+}
+
+/* ---------------- Cards ---------------- */
+
+async function loadCards() {
+  try {
+    const cards = await api("/cards");
+    const container = document.getElementById("cards-list");
+    if (!cards.length) { container.innerHTML = ""; return; }
+    container.innerHTML = cards.map((c) => `
+      <div class="card-visual">
+        <div class="card-chip"></div>
+        <div class="card-num">${c.cardNumber}</div>
+        <div class="card-foot"><span>${c.cardHolder}</span><span>${c.expiry}</span></div>
+      </div>`).join("");
+  } catch (err) {
+    showError("error-cards", err.message);
+  }
+}
+
+async function handleCreateCard() {
+  clearError("error-cards");
+  const fundingAmount = document.getElementById("card-amount").value;
+  if (!fundingAmount || Number(fundingAmount) < 500) {
+    showError("error-cards", "Fund the card with at least $500.");
+    return;
+  }
+  try {
+    await api("/cards/request", { method: "POST", body: JSON.stringify({ fundingAmount }) });
+    document.getElementById("card-amount").value = "";
+    await refreshBalance();
+    loadCards();
+  } catch (err) {
+    showError("error-cards", err.message);
+  }
+}
+
+/* ---------------- Settings ---------------- */
+
+function loadSettings() {
+  document.getElementById("set-name").value = state.user.fullName;
+  document.getElementById("set-email").value = state.user.email;
+  document.getElementById("set-acct").value = state.user.accountNumber;
+}
+
+/* ---------------- PIN entry (used for both "set PIN" and "confirm transfer") ---------------- */
+
+function buildKeypad(containerId, dotsId) {
+  const keys = ["1","2","3","4","5","6","7","8","9","","0","⌫"];
+  const container = document.getElementById(containerId);
+  container.innerHTML = keys.map((k) => k ? `<button onclick="pressPinKey('${k}','${dotsId}')">${k}</button>` : `<div></div>`).join("");
+}
+buildKeypad("pin-keypad", "pin-dots");
+buildKeypad("confirm-pin-keypad", "confirm-pin-dots");
+
+function startPinFlow(mode) {
+  state.pinMode = mode;
+  state.pinBuffer = "";
+  updatePinDots(mode === "set" ? "pin-dots" : "confirm-pin-dots");
+}
+
+function updatePinDots(dotsId) {
+  const dots = document.querySelectorAll(`#${dotsId} .dot`);
+  dots.forEach((d, i) => d.classList.toggle("filled", i < state.pinBuffer.length));
+}
+
+async function pressPinKey(key, dotsId) {
+  if (key === "⌫") { state.pinBuffer = state.pinBuffer.slice(0, -1); updatePinDots(dotsId); return; }
+  if (state.pinBuffer.length >= 4) return;
+  state.pinBuffer += key;
+  updatePinDots(dotsId);
+
+  if (state.pinBuffer.length === 4) {
+    const pin = state.pinBuffer;
+    if (state.pinMode === "set") {
+      try {
+        await api("/auth/set-pin", { method: "POST", body: JSON.stringify({ pin }) });
+        closeModal("modal-set-pin");
+      } catch (err) {
+        alert(err.message);
+      }
+    } else if (state.pinMode === "confirm") {
+      try {
+        await runPendingTransfer(pin);
+        closeModal("modal-enter-pin");
+        alert("Transfer successful.");
+      } catch (err) {
+        closeModal("modal-enter-pin");
+        alert(err.message);
+      }
+    }
+    state.pinBuffer = "";
+  }
+}
+
+/* ---------------- Boot ---------------- */
+
+if (state.token && state.user) {
+  enterApp();
+  checkPendingFund();
+}
+</script>
+</body>
+</html>

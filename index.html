@@ -64,6 +64,52 @@
   .btn-danger{ background:transparent; color:var(--coral); border:1px solid rgba(226,114,91,0.4); }
 
   .switch-auth{ text-align:center; margin-top:auto; padding-top:32px; color:var(--text-dim); font-size:14px; }
+
+  /* ---------- Light theme override for auth screens ---------- */
+  #screen-login, #screen-signup{
+    background:#FFFFFF; color:#111827;
+  }
+  #screen-login .brand-name, #screen-signup .brand-name{ color:#012169; }
+  #screen-login .brand-mark, #screen-signup .brand-mark{ border-color:#012169; color:#012169; }
+  #screen-login .auth-title, #screen-signup .auth-title{ color:#111827; }
+  #screen-login .auth-sub, #screen-signup .auth-sub{ color:#5B6472; }
+  #screen-login .field label, #screen-signup .field label{ color:#5B6472; }
+  #screen-login .field input, #screen-signup .field input{
+    background:#F7F9FC; border:1px solid #DDE2EA; color:#111827;
+  }
+  #screen-login .field input::placeholder, #screen-signup .field input::placeholder{ color:#9AA3B0; }
+  #screen-login .field input:focus, #screen-signup .field input:focus{ border-color:#012169; }
+  #screen-login .btn-primary, #screen-signup .btn-primary{ background:#1F7A5C; color:#fff; }
+  #screen-login .switch-auth, #screen-signup .switch-auth{ color:#5B6472; }
+  #screen-login .switch-auth a, #screen-signup .switch-auth a{ color:#012169; }
+  #screen-signup > .auth-wrap > div[style*="uppercase"]{ color:#012169 !important; }
+  #screen-login .error-banner, #screen-signup .error-banner{ background:#FDEDEE; border-color:#F3B8BE; color:#B3261E; }
+  .country-select{ width:100%; background:#F7F9FC; border:1px solid #DDE2EA; color:#111827; padding:14px 15px; border-radius:11px; font-size:15px; font-family:'Inter',sans-serif; }
+
+  /* banking category menu grid */
+  #screen-landing .lp-menu-grid{ display:grid; grid-template-columns:1fr 1fr; gap:22px 16px; padding:28px 20px; }
+  #screen-landing .lp-menu-item{ display:flex; align-items:flex-start; gap:10px; }
+  #screen-landing .lp-menu-item .icon{ width:22px; height:22px; flex-shrink:0; margin-top:2px; }
+  #screen-landing .lp-menu-item span{ color:#1746A2; font-weight:600; font-size:13.5px; line-height:1.35; }
+  #screen-landing .lp-menu-actions{ display:flex; gap:10px; padding:0 20px 10px; }
+  #screen-landing .lp-menu-action{ flex:1; display:flex; align-items:center; gap:10px; border:1.5px solid #1746A2; border-radius:12px; padding:12px; background:#fff; }
+  #screen-landing .lp-menu-action .icon{ width:34px; height:34px; border-radius:8px; background:#1746A2; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  #screen-landing .lp-menu-action span{ font-size:12.5px; font-weight:700; color:#1746A2; line-height:1.3; }
+
+  /* promo offer section */
+  #screen-landing .lp-promo{ background:#E9F0FF; margin:24px 20px 0; border-radius:16px; padding:26px 22px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  #screen-landing .lp-promo-tiers div{ font-family:'IBM Plex Mono',monospace; font-weight:700; color:#1746A2; padding:4px 0; border-bottom:1px solid #B9CDF2; }
+  #screen-landing .lp-promo-tiers div:first-child{ font-size:16px; opacity:0.7; }
+  #screen-landing .lp-promo-tiers div:nth-child(2){ font-size:20px; opacity:0.85; }
+  #screen-landing .lp-promo-tiers div:last-child{ font-size:26px; border-bottom:none; }
+  #screen-landing .lp-promo-card{ width:110px; aspect-ratio:1.586; border-radius:10px; background:linear-gradient(135deg,#1746A2,#0E2F73); position:relative; flex-shrink:0; }
+  #screen-landing .lp-promo-card::before{ content:""; position:absolute; top:14px; left:12px; width:20px; height:15px; background:linear-gradient(135deg,#F5DFA0,#C9A24B); border-radius:3px; }
+  #screen-landing .lp-promo-card::after{ content:"MERIDIAN"; position:absolute; bottom:10px; left:12px; color:#fff; font-size:8px; font-weight:700; letter-spacing:0.05em; }
+  #screen-landing .lp-promo-info{ padding:18px 20px 30px; }
+  #screen-landing .lp-promo-info h4{ font-size:15px; font-weight:800; color:var(--boa-ink); margin-bottom:4px; }
+  #screen-landing .lp-promo-info .offer{ color:#1F7A5C; font-weight:700; font-size:14px; margin-bottom:6px; }
+  #screen-landing .lp-promo-info p{ font-size:12.5px; color:var(--boa-dim); }
+  #screen-login .success-banner, #screen-signup .success-banner{ background:#EAF7F0; border-color:#B7E4CC; color:#1F7A5C; }
   .switch-auth a{ color:var(--brass); text-decoration:none; font-weight:600; cursor:pointer; }
 
   .error-banner{ background:rgba(226,114,91,0.12); border:1px solid rgba(226,114,91,0.35); color:#F0B4A5; padding:11px 14px; border-radius:10px; font-size:13.5px; margin-bottom:16px; }
@@ -165,19 +211,56 @@
   .stat-box .value{ font-size:18px; font-weight:600; }
 
   ::selection{ background:var(--brass); color:var(--ink); }
-  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+
+  #loading-overlay{
+    position:fixed; inset:0; z-index:999; background:var(--ink);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px;
+    opacity:0; pointer-events:none; transition:opacity 0.25s ease;
+  }
+  #loading-overlay.active{ opacity:1; pointer-events:all; }
+  .loading-mark{
+    width:52px; height:52px; border-radius:12px; border:1.5px solid var(--brass);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces',serif; font-weight:700; font-size:22px; color:var(--brass);
+    animation:loadingPulse 1.1s ease-in-out infinite;
+  }
+  .loading-spinner{
+    width:26px; height:26px; border-radius:50%;
+    border:2.5px solid var(--line-strong); border-top-color:var(--brass);
+    animation:loadingSpin 0.7s linear infinite;
+  }
+  @keyframes loadingSpin{ to{ transform:rotate(360deg); } }
+  @keyframes loadingPulse{ 0%,100%{ transform:scale(1); opacity:1; } 50%{ transform:scale(1.08); opacity:0.75; } }
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; animation:none !important; } }
 
   /* ---------- Landing page: BOA-inspired light theme, scoped ---------- */
   #screen-landing{
-    --boa-blue:#012169; --boa-blue-deep:#001238; --boa-red:#E31837; --boa-bg:#FFFFFF; --boa-ink:#111827; --boa-dim:#5B6472;
+    --boa-blue:#1746A2; --boa-blue-deep:#0E2F73; --boa-red:#1F7A5C; --boa-bg:#FFFFFF; --boa-ink:#111827; --boa-dim:#5B6472;
     background:var(--boa-bg); color:var(--boa-ink); padding:0 !important;
   }
-  #screen-landing .lp-nav{ display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid #EBEDF0; }
+  #screen-landing .lp-nav{ display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid #EBEDF0; position:sticky; top:0; z-index:50; background:#fff; }
   #screen-landing .lp-brand{ display:flex; align-items:center; gap:9px; }
   #screen-landing .lp-brand-mark{ width:32px; height:32px; border-radius:7px; background:var(--boa-blue); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-weight:700; font-size:15px; }
   #screen-landing .lp-brand-name{ font-family:'Fraunces',serif; font-weight:600; font-size:17px; color:var(--boa-blue); }
   #screen-landing .lp-links{ display:flex; gap:16px; overflow-x:auto; font-size:12px; color:var(--boa-dim); font-weight:600; }
   #screen-landing .lp-links span:first-child{ color:var(--boa-blue); }
+  #screen-landing .lp-menu-btn{ background:none; border:none; cursor:pointer; padding:6px; display:flex; flex-direction:column; gap:4px; }
+  #screen-landing .lp-menu-btn span{ width:22px; height:2px; background:var(--boa-blue); border-radius:2px; display:block; }
+  #screen-landing .lp-menu-dropdown{ position:absolute; top:100%; left:0; right:0; background:#fff; border-bottom:1px solid #EBEDF0; box-shadow:0 16px 30px rgba(0,0,0,0.1); padding:10px 20px 24px; z-index:20; display:none; flex-direction:column; max-height:80vh; overflow-y:auto; }
+  #screen-landing .lp-menu-dropdown.open{ display:flex; }
+  #screen-landing .lp-menu-link{ padding:14px 0; border-bottom:1px solid #F0F2F5; cursor:pointer; }
+  #screen-landing .lp-menu-link:last-of-type{ border-bottom:none; }
+  #screen-landing .lp-menu-link .title{ font-family:'Fraunces',serif; font-size:15.5px; font-weight:600; color:var(--boa-ink); margin-bottom:3px; }
+  #screen-landing .lp-menu-link .desc{ font-size:12.5px; color:var(--boa-dim); line-height:1.5; }
+  #screen-landing .lp-menu-auth-row{ display:flex; gap:10px; margin-top:16px; }
+  #screen-landing .lp-menu-auth-row button{ flex:1; padding:13px; border-radius:10px; font-weight:700; font-size:14px; cursor:pointer; }
+  #screen-landing .lp-menu-login-btn{ background:#fff; border:1.5px solid #1746A2; color:#1746A2; }
+  #screen-landing .lp-menu-register-btn{ background:#1746A2; border:none; color:#fff; }
+
+  @keyframes lpFloat{ 0%,100%{ transform:translate(0,0); } 50%{ transform:translate(-8px,-14px); } }
+  @keyframes lpPulse{ 0%,100%{ opacity:0.18; } 50%{ opacity:0.32; } }
+  #screen-landing .lp-hero-illustration circle[opacity]{ animation:lpFloat 7s ease-in-out infinite, lpPulse 4s ease-in-out infinite; transform-origin:center; }
+  #screen-landing .lp-hero-illustration circle[opacity]:nth-of-type(2){ animation-delay:1.2s, 0.6s; }
 
   #screen-landing .lp-hero{
     background:linear-gradient(160deg, var(--boa-blue) 0%, var(--boa-blue-deep) 100%);
@@ -196,6 +279,27 @@
 
   #screen-landing .lp-card-graphic{ position:relative; z-index:1; margin-top:26px; width:190px; }
 
+  /* full-bleed photo-style hero, matching Zecco's layout */
+  #screen-landing .lp-hero-photo{
+    position:relative; height:78vh; min-height:520px; overflow:hidden;
+    background:linear-gradient(180deg, #A9C1EE 0%, #7FA0DE 55%, #5F84CC 100%);
+  }
+  #screen-landing .lp-hero-illustration{ position:absolute; inset:0; opacity:0.22; filter:blur(1px); }
+  #screen-landing .lp-glow-a{ animation:lpGlowA 8s ease-in-out infinite; transform-origin:330px 150px; }
+  #screen-landing .lp-glow-b{ animation:lpGlowB 10s ease-in-out infinite; transform-origin:60px 480px; }
+  @keyframes lpGlowA{ 0%,100%{ transform:translate(0,0) scale(1); } 50%{ transform:translate(-20px,30px) scale(1.15); } }
+  @keyframes lpGlowB{ 0%,100%{ transform:translate(0,0) scale(1); } 50%{ transform:translate(25px,-20px) scale(1.2); } }
+  #screen-landing .lp-hero-scrim{ position:absolute; inset:0; background:linear-gradient(180deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.12) 60%, rgba(0,10,30,0.15) 100%); }
+  #screen-landing .lp-hero-content{ position:relative; z-index:2; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:0 28px; }
+  #screen-landing .lp-hero-welcome{ color:#1F7A5C; font-size:12px; font-weight:700; letter-spacing:0.3em; text-transform:uppercase; margin-bottom:14px; }
+  #screen-landing .lp-hero-wordmark{ font-family:'Fraunces',serif; font-weight:800; font-size:56px; color:#0E2F73; letter-spacing:0.01em; line-height:1; margin-bottom:20px; -webkit-text-stroke:1px #0E2F73; text-shadow:0 2px 0 rgba(14,47,115,0.3), 0 6px 24px rgba(14,47,115,0.25); }
+  #screen-landing .lp-hero-tagline{ color:#EAF1FF; font-size:15px; line-height:1.6; max-width:300px; margin-bottom:28px; text-shadow:0 1px 8px rgba(0,20,60,0.3); }
+  #screen-landing .lp-hero-cta{ background:#3B6FE0; color:#fff; border:none; padding:15px 34px; border-radius:10px; font-weight:700; font-size:15px; cursor:pointer; box-shadow:0 10px 30px rgba(59,111,224,0.3); }
+  #screen-landing .lp-hero-dots{ position:absolute; bottom:22px; left:0; right:0; display:flex; justify-content:center; gap:8px; z-index:2; }
+  #screen-landing .lp-hero-dots span{ width:6px; height:6px; border-radius:50%; background:rgba(14,47,115,0.25); }
+  #screen-landing .lp-hero-dots span.active{ background:#F5A623; width:20px; border-radius:4px; }
+  #screen-landing .lp-hero-progress{ position:absolute; bottom:0; left:0; height:3px; background:#F5A623; width:45%; z-index:2; }
+
   /* horizontal stat strip */
   #screen-landing .lp-stats{ display:flex; overflow-x:auto; gap:0; border-bottom:1px solid #EBEDF0; }
   #screen-landing .lp-stat{ flex:0 0 auto; min-width:130px; padding:18px 20px; border-right:1px solid #EBEDF0; }
@@ -211,7 +315,71 @@
   #screen-landing .lp-feature-card h4{ font-size:14px; font-weight:700; margin-bottom:5px; color:var(--boa-ink); }
   #screen-landing .lp-feature-card p{ font-size:12px; color:var(--boa-dim); line-height:1.5; }
 
+  #screen-landing .lp-writeup{ padding:40px 22px; border-top:1px solid #EBEDF0; }
+  #screen-landing .lp-writeup-eyebrow{ font-size:11.5px; font-weight:700; letter-spacing:0.1em; color:var(--boa-red); text-transform:uppercase; margin-bottom:8px; }
+  #screen-landing .lp-writeup h2{ font-family:'Fraunces',serif; font-size:24px; font-weight:700; color:var(--boa-ink); margin-bottom:14px; }
+  #screen-landing .lp-writeup p{ font-size:14px; color:var(--boa-dim); line-height:1.7; margin-bottom:12px; }
+  #screen-landing .lp-writeup ul{ margin:14px 0 0; padding-left:20px; }
+  #screen-landing .lp-writeup li{ font-size:13.5px; color:var(--boa-dim); line-height:1.6; margin-bottom:8px; }
+  #screen-landing .lp-writeup-stats{ display:flex; gap:24px; margin-top:20px; flex-wrap:wrap; }
+  #screen-landing .lp-writeup-stats div{ min-width:80px; }
+  #screen-landing .lp-writeup-stats .num{ font-family:'IBM Plex Mono',monospace; font-size:22px; font-weight:700; color:var(--boa-blue); }
+  #screen-landing .lp-writeup-stats .lbl{ font-size:11px; color:var(--boa-dim); margin-top:2px; }
+  #screen-landing .lp-writeup-contact-row{ display:flex; align-items:flex-start; gap:12px; margin-top:16px; }
+  #screen-landing .lp-writeup-contact-row .icon{ width:34px; height:34px; border-radius:9px; background:var(--boa-blue); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  #screen-landing .lp-writeup-contact-row .txt{ font-size:13.5px; color:var(--boa-ink); }
+  #screen-landing .lp-writeup-contact-row .txt small{ display:block; color:var(--boa-dim); font-size:12px; margin-top:1px; }
+
   #screen-landing .lp-footer-cta{ background:#F7F9FC; margin:30px 0 0; padding:32px 22px 40px; text-align:center; }
+
+  /* ---------- Site footer ---------- */
+  #screen-landing .lp-site-footer{ background:#0E2F73; color:#C9D4EE; padding:44px 22px 28px; }
+  #screen-landing .lp-footer-brand{ display:flex; align-items:center; gap:9px; margin-bottom:28px; }
+  #screen-landing .lp-footer-brand .mark{ width:30px; height:30px; border-radius:7px; border:1.5px solid #fff; color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-weight:700; font-size:14px; }
+  #screen-landing .lp-footer-brand .name{ font-family:'Fraunces',serif; font-weight:600; font-size:16px; color:#fff; }
+
+  #screen-landing .lp-footer-links{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));
+    gap:12px 20px;
+    margin-bottom:32px;
+  }
+  #screen-landing .lp-footer-links a{
+    display:block; color:#C9D4EE; font-size:13.5px; text-decoration:none;
+    padding:6px 0; border-bottom:1px solid transparent; transition:color 0.15s ease, border-color 0.15s ease;
+  }
+  #screen-landing .lp-footer-links a:hover,
+  #screen-landing .lp-footer-links a:focus-visible{ color:#fff; border-bottom-color:#5EE7C4; outline:none; }
+
+  #screen-landing .lp-footer-social{ display:flex; gap:12px; margin-bottom:36px; flex-wrap:wrap; }
+  #screen-landing .lp-footer-social a{
+    width:38px; height:38px; border-radius:50%; border:1.5px solid rgba(255,255,255,0.25);
+    display:flex; align-items:center; justify-content:center; color:#fff; text-decoration:none;
+    transition:background 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
+  }
+  #screen-landing .lp-footer-social a:hover,
+  #screen-landing .lp-footer-social a:focus-visible{
+    background:#5EE7C4; border-color:#5EE7C4; color:#0E2F73; transform:translateY(-2px); outline:none;
+  }
+
+  #screen-landing .lp-footer-notice{
+    border:1px solid rgba(255,255,255,0.2); border-radius:14px; padding:20px;
+    margin-bottom:20px; background:rgba(255,255,255,0.04);
+  }
+  #screen-landing .lp-footer-notice h4{ color:#fff; font-family:'Fraunces',serif; font-size:15px; font-weight:600; margin-bottom:12px; }
+  #screen-landing .lp-footer-notice ul{ margin:0; padding-left:18px; }
+  #screen-landing .lp-footer-notice li{ font-size:12.5px; line-height:1.6; color:#C9D4EE; margin-bottom:6px; }
+
+  #screen-landing .lp-footer-disclaimer{ font-size:11.5px; line-height:1.6; color:#8FA3D1; margin-bottom:28px; }
+
+  #screen-landing .lp-footer-bottom{
+    border-top:1px solid rgba(255,255,255,0.15); padding-top:18px;
+    font-size:11.5px; color:#8FA3D1; display:flex; flex-wrap:wrap; gap:8px 16px; justify-content:space-between;
+  }
+
+  @media (min-width:600px){
+    #screen-landing .lp-footer-links{ grid-template-columns:repeat(2, 1fr); max-width:420px; }
+  }
   #screen-landing .lp-footer-cta h3{ font-family:'Fraunces',serif; font-size:22px; color:var(--boa-blue); margin-bottom:10px; }
   #screen-landing .lp-footer-cta p{ font-size:13px; color:var(--boa-dim); margin-bottom:20px; }
 
@@ -220,361 +388,859 @@
   #screen-landing .lp-eyebrow-tag .tag{ font-size:11.5px; font-weight:700; letter-spacing:0.1em; color:var(--boa-red); text-transform:uppercase; }
   #screen-landing .lp-eyebrow-tag h2{ font-family:'Fraunces',serif; font-size:26px; font-weight:700; color:var(--boa-ink); margin-top:6px; }
 
-  #screen-landing .lp-service{ display:flex; gap:16px; padding:20px; margin:16px 20px 0; background:#F7F9FC; border:1px solid #EBEDF0; border-radius:16px; }
-  #screen-landing .lp-service-icon{ width:56px; height:56px; flex-shrink:0; border-radius:50%; background:var(--boa-blue); display:flex; align-items:center; justify-content:center; }
-  #screen-landing .lp-service h4{ font-family:'Fraunces',serif; font-size:17px; font-weight:600; color:var(--boa-ink); margin-bottom:6px; }
-  #screen-landing .lp-service p{ font-size:13px; color:var(--boa-dim); line-height:1.55; }
-
-  #screen-landing .lp-news-card{ display:flex; gap:14px; padding:14px 20px; align-items:center; }
-  #screen-landing .lp-news-thumb{ width:78px; height:78px; flex-shrink:0; border-radius:12px; background:linear-gradient(135deg, var(--boa-blue), #24418E); display:flex; align-items:center; justify-content:center; }
+  #screen-landing .lp-news-card{ display:block; padding:0 20px 22px; }
+  #screen-landing .lp-news-thumb{ width:100%; height:150px; border-radius:14px; display:flex; align-items:center; justify-content:center; margin-bottom:12px; }
   #screen-landing .lp-news-date{ display:inline-block; background:#F5A623; color:#fff; font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:20px; margin-bottom:6px; }
-  #screen-landing .lp-news-card h5{ font-size:13.5px; font-weight:700; color:var(--boa-ink); line-height:1.4; }
+  #screen-landing .lp-news-card h5{ font-size:14.5px; font-weight:700; color:var(--boa-ink); line-height:1.4; }
+
+  /* circular stat rings */
+  #screen-landing .lp-rings{ display:flex; justify-content:space-around; padding:34px 20px 10px; background:#F4F8FF; flex-wrap:wrap; gap:20px; }
+  #screen-landing .lp-ring{ text-align:center; }
+  #screen-landing .lp-ring .ring-label{ color:#4A5A80; font-size:11.5px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; margin-top:10px; }
+  #screen-landing .lp-ring svg text{ fill:#0E2F73; font-family:'IBM Plex Mono',monospace; font-weight:600; }
+
+  /* services write-up paragraph + discover button */
+  #screen-landing .lp-services-copy{ padding:0 20px 20px; font-size:13.5px; color:var(--boa-dim); line-height:1.65; text-align:center; }
+  #screen-landing .lp-discover-btn{ display:block; margin:0 auto 30px; background:var(--boa-blue); color:#fff; border:none; padding:13px 30px; border-radius:8px; font-weight:700; font-size:14px; cursor:pointer; }
+
+  /* customer type cards with graphic panels */
+  #screen-landing .lp-customer-card{ margin:0 20px 18px; border-radius:16px; overflow:hidden; border:1px solid #EBEDF0; }
+  #screen-landing .lp-customer-graphic{ height:150px; background:linear-gradient(135deg, var(--boa-blue), #24418E); display:flex; align-items:center; justify-content:center; }
+  #screen-landing .lp-customer-card h5{ padding:16px 18px 18px; font-family:'Fraunces',serif; font-size:17px; font-weight:600; color:var(--boa-ink); }
+
+  /* mobile app phone mockup section */
+  #screen-landing .lp-app-section{ background:#F4F8FF; padding:38px 22px 50px; text-align:center; color:#0E2F73; }
+  #screen-landing .lp-app-section h3{ font-family:'Fraunces',serif; font-size:24px; font-weight:600; max-width:280px; margin:0 auto 18px; }
+  #screen-landing .lp-app-btn{ background:var(--boa-blue); color:#fff; border:none; padding:12px 26px; border-radius:24px; font-weight:700; font-size:13.5px; cursor:pointer; margin-bottom:34px; }
+  #screen-landing .lp-phone{ width:230px; margin:0 auto; border:8px solid #0a0a0a; border-radius:32px; background:#0a0a0a; box-shadow:0 20px 50px rgba(0,0,0,0.4); animation:lpPhoneFloat 5s ease-in-out infinite; transform-style:preserve-3d; }
+  @keyframes lpPhoneFloat{
+    0%{ transform:translateY(0) rotate(-1.5deg); }
+    50%{ transform:translateY(-12px) rotate(1.5deg); }
+    100%{ transform:translateY(0) rotate(-1.5deg); }
+  }
+  #screen-landing .lp-phone-notch{ width:60px; height:6px; background:#0a0a0a; border-radius:4px; margin:8px auto; }
+  #screen-landing .lp-phone-screen{ background:#fff; border-radius:22px; overflow:hidden; }
+  #screen-landing .lp-phone-topbar{ display:flex; justify-content:space-between; align-items:center; padding:12px 14px 8px; }
+  #screen-landing .lp-phone-tabs{ display:flex; gap:16px; padding:0 14px 10px; border-bottom:1px solid #EBEDF0; font-size:11px; font-weight:700; color:#9AA3B0; }
+  #screen-landing .lp-phone-tabs .active{ color:var(--boa-blue); border-bottom:2px solid var(--boa-blue); padding-bottom:8px; }
+  #screen-landing .lp-phone-body{ padding:12px 14px 18px; text-align:left; }
+  #screen-landing .lp-phone-label{ font-size:9.5px; color:#9AA3B0; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px; }
+  #screen-landing .lp-phone-cards{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  #screen-landing .lp-phone-card{ background:#F7F9FC; border-radius:10px; padding:10px; }
+  #screen-landing .lp-phone-card .icon{ width:26px; height:26px; border-radius:50%; background:var(--boa-blue); display:flex; align-items:center; justify-content:center; margin-bottom:8px; }
+  #screen-landing .lp-phone-card .label{ font-size:9px; color:#9AA3B0; }
+  #screen-landing .lp-phone-card .value{ font-size:13px; font-weight:700; color:var(--boa-ink); }
+
+  /* Meridian debit card graphic */
+  #screen-landing .lp-mcard-wrap{ padding:36px 24px 10px; text-align:center; }
+  #screen-landing .lp-mcard{ width:280px; margin:0 auto; aspect-ratio:1.586; border-radius:16px; background:linear-gradient(135deg, var(--boa-blue), var(--boa-blue-deep)); padding:20px; text-align:left; position:relative; overflow:hidden; box-shadow:0 20px 40px rgba(1,33,105,0.3); }
+  #screen-landing .lp-mcard::after{ content:""; position:absolute; right:-30px; top:-30px; width:140px; height:140px; border-radius:50%; background:rgba(255,255,255,0.06); }
+  #screen-landing .lp-mcard-chip{ width:38px; height:28px; background:linear-gradient(135deg,#F5DFA0,#C9A24B); border-radius:6px; margin-bottom:24px; }
+  #screen-landing .lp-mcard-number{ color:#fff; font-family:'IBM Plex Mono',monospace; font-size:16.5px; letter-spacing:0.08em; margin-bottom:14px; }
+  #screen-landing .lp-mcard-row{ display:flex; justify-content:space-between; color:#C9D4EE; font-size:10px; text-transform:uppercase; letter-spacing:0.05em; }
+  #screen-landing .lp-mcard-row b{ display:block; color:#fff; font-size:12.5px; letter-spacing:0.02em; margin-top:3px; font-family:'IBM Plex Mono',monospace; }
+  #screen-landing .lp-mcard-brand{ position:absolute; bottom:20px; right:20px; color:#fff; font-family:'Fraunces',serif; font-weight:700; font-size:18px; }
+  #screen-landing .lp-mcard-note{ font-size:11.5px; color:var(--boa-dim); margin-top:16px; max-width:260px; margin-left:auto; margin-right:auto; }
+
+  /* service cards with their own graphic panel, like customer cards */
+  #screen-landing .lp-service-v2{ margin:0 20px 18px; border-radius:16px; overflow:hidden; border:1px solid #EBEDF0; }
+  #screen-landing .lp-service-v2-graphic{ height:120px; display:flex; align-items:center; justify-content:center; }
+  #screen-landing .lp-service-v2 .body{ padding:16px 18px 18px; }
+  #screen-landing .lp-service-v2 .body h4{ font-family:'Fraunces',serif; font-size:17px; font-weight:600; color:var(--boa-ink); margin-bottom:6px; }
+  #screen-landing .lp-service-v2 .body p{ font-size:13px; color:var(--boa-dim); line-height:1.55; }
+  #screen-landing .lp-service-v2 h4{ font-family:'Fraunces',serif; font-size:16px; font-weight:600; color:var(--boa-ink); margin-bottom:6px; }
+  #screen-landing .lp-service-v2 p{ font-size:13px; color:var(--boa-dim); line-height:1.55; }
+  /* Card container: force elements to stack vertically */
+.lp-service-v2 {
+  display: flex !important;
+  flex-direction: column !important;
+  position: relative !important;
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Image graphic section on top */
+.lp-service-v2-graphic {
+  width: 100% !important;
+  height: 180px !important; /* Adjust height as desired */
+  position: static !important;
+  flex-shrink: 0;
+}
+
+.lp-service-v2-graphic img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+/* Write-up section underneath photo */
+.lp-service-v2 .body {
+  position: static !important;
+  padding: 16px !important;
+  background: transparent !important;
+  color: inherit !important;
+}
+
+.lp-service-v2 .body h4 {
+  margin: 0 0 8px 0 !important;
+}
+
+.lp-service-v2 .body p {
+  margin: 0 !important;
+}
+/* Container & Zooming Background Animation */
+.lp-hero-photo {
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.lp-hero-photo::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url('background.jpeg') center/cover no-repeat;
+  animation: heroZoom 20s infinite alternate ease-in-out;
+  z-index: 0;
+}
+
+.lp-hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes heroZoom {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.08); }
+}
+
+/* Text Fade-In-Up Animations */
+.lp-hero-welcome,
+.lp-hero-wordmark,
+.lp-hero-tagline,
+.lp-hero-cta {
+  opacity: 0;
+  animation: fadeInUp 0.8s ease forwards;
+}
+
+.lp-hero-welcome  { animation-delay: 0.2s; }
+.lp-hero-wordmark { animation-delay: 0.4s; }
+.lp-hero-tagline  { animation-delay: 0.6s; }
+.lp-hero-cta      { animation-delay: 0.8s; }
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 </style>
 </head>
 <body>
 
 <div id="app">
 
-  <!-- ============ LANDING ============ -->
-  <div class="screen active" id="screen-landing">
-    <div class="lp-nav">
-      <div class="lp-brand"><div class="lp-brand-mark">M</div><div class="lp-brand-name">Meridian</div></div>
-      <div class="lp-links">
-        <span>Home</span><span>Banking</span><span>Cards</span><span>Support</span>
-      </div>
-    </div>
+<div id="loading-overlay" class="active">
+<div class="loading-mark">M</div>
+<div class="loading-swivel"></div>
+</div>
 
-    <div class="lp-hero">
-      <div class="lp-hero-eyebrow">Personal Banking</div>
-      <h1>What would you like the power to do?</h1>
-      <p>Checking, savings, cards and bill pay — everything you need to manage your money, in one account.</p>
-      <div class="lp-cta-row">
-        <button class="lp-btn-primary" onclick="showScreen('screen-signup')">Open an account</button>
-        <button class="lp-btn-ghost" onclick="showScreen('screen-login')">Log in</button>
-      </div>
 
-      <svg class="lp-card-graphic" viewBox="0 0 300 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="10" y="20" width="280" height="150" rx="16" fill="#001A4D" stroke="#3E5B9E" stroke-width="1"/>
-        <rect x="30" y="50" width="42" height="30" rx="5" fill="#E31837"/>
-        <rect x="30" y="120" width="140" height="10" rx="5" fill="#7B93C9"/>
-        <rect x="30" y="140" width="90" height="8" rx="4" fill="#4A6099"/>
-        <text x="252" y="150" fill="#fff" font-family="Fraunces, serif" font-size="16" font-weight="600" text-anchor="end">M</text>
-      </svg>
-    </div>
+<!-- ============ LANDING ============ -->
+<div class="screen active" id="screen-landing">
+<div class="lp-nav" style="position:relative;">
+<div class="lp-brand"><div class="lp-brand-mark">M</div><div class="lp-brand-name">Meridian</div></div>
+<button class="lp-menu-btn" onclick="toggleLpMenu()"><span></span><span></span><span></span></button>
+<div class="lp-menu-dropdown" id="lp-menu-dropdown">
+<div class="lp-menu-link" onclick="lpScrollTo('lp-section-home'); toggleLpMenu()">
+<div class="title">Home</div>
+<div class="desc">Everything about your Meridian account, in one place.</div>
+</div>
+<div class="lp-menu-link" onclick="lpScrollTo('lp-section-about'); toggleLpMenu()">
+<div class="title">About us</div>
+<div class="desc">Who we are and why we built banking this way.</div>
+</div>
+<div class="lp-menu-link" onclick="lpScrollTo('lp-section-investor'); toggleLpMenu()">
+<div class="title">Investor relations</div>
+<div class="desc">Our growth, our numbers, and where we're headed.</div>
+</div>
+<div class="lp-menu-link" onclick="lpScrollTo('lp-section-responsibility'); toggleLpMenu()">
+<div class="title">Responsibility</div>
+<div class="desc">How we work responsibly toward customers and society.</div>
+</div>
+<div class="lp-menu-link" onclick="lpScrollTo('lp-section-product'); toggleLpMenu()">
+<div class="title">Product</div>
+<div class="desc">Checking, savings, cards, and bill pay — see it all.</div>
+</div>
+<div class="lp-menu-link" onclick="lpScrollTo('lp-section-contact'); toggleLpMenu()">
+<div class="title">Contact</div>
+<div class="desc">Reach our support team, any time you need us.</div>
+</div>
+<div class="lp-menu-auth-row">
+<button class="lp-menu-login-btn" onclick="showScreen('screen-login'); toggleLpMenu()">Log in</button>
+<button class="lp-menu-register-btn" onclick="showScreen('screen-signup'); toggleLpMenu()">Register</button>
+</div>
+</div>
+</div>
 
-    <div class="lp-stats">
-      <div class="lp-stat"><div class="num">2.4M+</div><div class="label">Accounts opened</div></div>
-      <div class="lp-stat"><div class="num">99.9%</div><div class="label">Uptime</div></div>
-      <div class="lp-stat"><div class="num">4.8/5</div><div class="label">Customer rating</div></div>
-      <div class="lp-stat"><div class="num">24/7</div><div class="label">Support</div></div>
-    </div>
-
-    <div class="lp-section-title">Everything in one place</div>
-    <div class="lp-section-sub">Swipe to see what's included with your account.</div>
-    <div class="lp-feature-row">
-      <div class="lp-feature-card">
-        <div class="lp-feature-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M7 17l5-5 5 5M7 7l5 5 5-5"/></svg></div>
-        <h4>Instant transfers</h4>
-        <p>Send and receive money in seconds, to anyone, anytime.</p>
-      </div>
-      <div class="lp-feature-card">
-        <div class="lp-feature-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
-        <h4>Savings goals</h4>
-        <p>Set a target, fund it from your balance, and track progress.</p>
-      </div>
-      <div class="lp-feature-card">
-        <div class="lp-feature-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></div>
-        <h4>Virtual cards</h4>
-        <p>Fund a card instantly and spend safely online.</p>
-      </div>
-      <div class="lp-feature-card">
-        <div class="lp-feature-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg></div>
-        <h4>Bill payments</h4>
-        <p>Electricity, cable, water and more — paid in a tap.</p>
-      </div>
-      <div class="lp-feature-card">
-        <div class="lp-feature-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M3 12l2-2 4 4 8-8 2 2"/></svg></div>
-        <h4>Full statements</h4>
-        <p>See every transaction with running totals, anytime.</p>
-      </div>
-    </div>
-
-    <div class="lp-eyebrow-tag">
-      <div class="dash"></div>
-      <div class="tag">Take a look at our</div>
-      <h2>Our services</h2>
-    </div>
-
-    <div class="lp-service">
-      <div class="lp-service-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 18h6"/></svg></div>
-      <div><h4>Mobile Pay</h4><p>Pay directly from your phone — scan, tap, or send, wherever you are.</p></div>
-    </div>
-    <div class="lp-service">
-      <div class="lp-service-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M2 10h20"/></svg></div>
-      <div><h4>Dynamic Pay</h4><p>Small businesses improve cash flow with flexible, on-demand payouts.</p></div>
-    </div>
-    <div class="lp-service">
-      <div class="lp-service-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="9"/></svg></div>
-      <div><h4>Entrepreneurs</h4><p>Growth-stage support for founders — built for businesses on the move.</p></div>
-    </div>
-    <div class="lp-service">
-      <div class="lp-service-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="12" cy="12" r="3"/></svg></div>
-      <div><h4>Empire Choice</h4><p>An arranged overdraft plus a debit card that doubles as a cash card.</p></div>
-    </div>
-    <div class="lp-service">
-      <div class="lp-service-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 2l2.9 6.6 7.1.7-5.3 4.9 1.6 7-6.3-3.7-6.3 3.7 1.6-7-5.3-4.9 7.1-.7z"/></svg></div>
-      <div><h4>Responsibility</h4><p>How we work responsibly toward customers and contribute to society.</p></div>
-    </div>
-
-    <div class="lp-eyebrow-tag">
-      <div class="dash"></div>
-      <div class="tag">Stay informed</div>
-      <h2>The news</h2>
-    </div>
-
-    <div class="lp-news-card">
-      <div class="lp-news-thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M18 3l-6 6-4-4-6 6"/></svg></div>
-      <div><span class="lp-news-date">Jul 18, 2026</span><h5>How to get the best loan online</h5></div>
-    </div>
-    <div class="lp-news-card">
-      <div class="lp-news-thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V4h8v3"/></svg></div>
-      <div><span class="lp-news-date">Jul 18, 2026</span><h5>A new way to finance your dream home</h5></div>
-    </div>
-    <div class="lp-news-card">
-      <div class="lp-news-thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0116 0v1"/></svg></div>
-      <div><span class="lp-news-date">Jul 18, 2026</span><h5>10 tips to get the best loan for you</h5></div>
-    </div>
-
-    <div class="lp-footer-cta">
-      <h3>Banking made simple.</h3>
-      <p>Open an account in under a minute. No paperwork, no branch visit.</p>
-      <button class="lp-btn-primary" onclick="showScreen('screen-signup')">Get started</button>
-    </div>
+<div class="lp-hero-photo" id="lp-section-home">
+  <div class="lp-hero-content">
+    <div class="lp-hero-welcome">Welcome</div>
+    <div class="lp-hero-wordmark">MERIDIAN</div>
+    <div class="lp-hero-tagline">Meridian is the banking platform built for how you actually live — checking, savings, cards and bill pay, all in one place.</div>
+    <button class="lp-hero-cta" onclick="showScreen('screen-signup')">Get started</button>
   </div>
-
-  <!-- ============ LOGIN ============ -->
-  <div class="screen" id="screen-login">
-    <div class="auth-wrap">
-      <div class="brand"><div class="brand-mark">M</div><div class="brand-name">Meridian</div></div>
-      <div class="auth-title">Welcome back.</div>
-      <div class="auth-sub">Log in to check your balance and move money.</div>
-      <div id="login-error"></div>
-      <div class="field"><label>Email</label><input type="email" id="login-email" placeholder="you@email.com"></div>
-      <div class="field"><label>Password</label><input type="password" id="login-password" placeholder="••••••••"></div>
-      <button class="btn btn-primary" id="login-btn" onclick="handleLogin()">Log in</button>
-      <div class="switch-auth">New here? <a onclick="showScreen('screen-signup')">Create an account</a></div>
-    </div>
+  <div class="lp-hero-dots">
+    <span></span><span class="active"></span><span></span><span></span>
   </div>
+  <div class="lp-hero-progress"></div>
+</div>
+<div class="lp-menu-grid">
+<div class="lp-menu-item">
+<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#1746A2" stroke-width="2"><rect x="2" y="7" width="20" height="10" rx="2"/><path d="M2 11h20"/></svg>
+<span onclick="showScreen('screen-signup')">Checking</span>
+</div>
+<div class="lp-menu-item">
+<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#1746A2" stroke-width="2"><path d="M19 5c-1.5-1-3.5-1-5 0-3-2-6-1-8 1-2 2-2 5 0 8 2 2 8 6 8 6s6-4 8-6c2-3 2-6 0-8z"/></svg>
+<span onclick="showScreen('screen-signup')">Savings goals</span>
+</div>
+<div class="lp-menu-item">
+<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#1746A2" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+<span onclick="showScreen('screen-signup')">Virtual cards</span>
+</div>
+<div class="lp-menu-item">
+<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#1746A2" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+<span onclick="showScreen('screen-signup')">Bill payments</span>
+</div>
+<div class="lp-menu-item">
+<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#1746A2" stroke-width="2"><path d="M3 21h18M6 21V9l6-6 6 6v12M9 21v-6h6v6"/></svg>
+<span onclick="showScreen('screen-signup')">Business banking</span>
+</div>
+<div class="lp-menu-item">
+<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#1746A2" stroke-width="2"><path d="M3 12l2-2 4 4 8-8 2 2"/></svg>
+<span onclick="showScreen('screen-signup')">Statements & history</span>
+</div>
+<div class="lp-menu-item">
+<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#1746A2" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+<span onclick="showScreen('screen-signup')">24/7 support</span>
+</div>
+<div class="lp-menu-item">
+<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#1746A2" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg>
+<span onclick="showScreen('screen-signup')">Student banking</span>
+</div>
+</div>
 
-  <!-- ============ SIGNUP ============ -->
-  <div class="screen" id="screen-signup">
-    <div class="auth-wrap">
-      <div class="brand"><div class="brand-mark">M</div><div class="brand-name">Meridian</div></div>
-      <div class="auth-title">Open your account.</div>
-      <div class="auth-sub">A few details so we can set your account up properly.</div>
-      <div id="signup-error"></div>
+<div class="lp-menu-actions">
+<div class="lp-menu-action">
+<div class="icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 18h6"/></svg></div>
+<span onclick="showScreen('screen-signup')">Get the free app</span>
+</div>
+<div class="lp-menu-action">
+<div class="icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg></div>
+<span onclick="showScreen('screen-signup')">Talk to a banker</span>
+</div>
+</div>
 
-      <div style="font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--brass); margin:18px 0 4px;">Personal details</div>
-      <div class="field"><label>Full name</label><input type="text" id="su-name" placeholder="Chidinma Okafor"></div>
-      <div class="field"><label>Date of birth</label><input type="date" id="su-dob"></div>
-      <div class="field"><label>Email</label><input type="email" id="su-email" placeholder="you@email.com"></div>
-      <div class="field"><label>Phone number</label><input type="tel" id="su-phone" placeholder="0803 000 0000"></div>
-      <div class="field"><label>Occupation</label><input type="text" id="su-occupation" placeholder="e.g. Software Developer"></div>
+<div class="lp-promo">
+<div class="lp-promo-tiers">
+<div>$100</div>
+<div>$300</div>
+<div>$500</div>
+</div>
+<div class="lp-promo-card"></div>
+</div>
+<div class="lp-promo-info">
+<h4>NEW CHECKING CUSTOMERS</h4>
+<div class="offer">Bonus offer up to $500</div>
+<p>Start by opening a new eligible Meridian checking account and setting up direct deposit.</p>
+</div>
 
-      <div style="font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--brass); margin:18px 0 4px;">Home address</div>
-      <div class="field"><label>Street address</label><input type="text" id="su-address" placeholder="12 Adeola Odeku Street"></div>
-      <div class="field"><label>City</label><input type="text" id="su-city" placeholder="Lagos"></div>
-      <div class="field"><label>State / Province</label><input type="text" id="su-state" placeholder="Lagos State"></div>
-      <div class="field"><label>Postal code</label><input type="text" id="su-postal" placeholder="100001"></div>
+<div style="padding:24px 20px 6px; text-align:center;">
+<button class="lp-btn-ghost" style="color:#012169; border-color:#012169; max-width:200px; margin:0 auto; display:block;" onclick="showScreen('screen-login')">Already bank with us? Log in</button>
+</div>
 
-      <div style="font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--brass); margin:18px 0 4px;">Next of kin</div>
-      <div class="field"><label>Full name</label><input type="text" id="su-nok-name" placeholder="Next of kin's name"></div>
-      <div class="field"><label>Relationship</label><input type="text" id="su-nok-relationship" placeholder="e.g. Sister, Spouse, Father"></div>
-      <div class="field"><label>Phone number</label><input type="tel" id="su-nok-phone" placeholder="0803 000 0000"></div>
+<div class="lp-stats">
+<div class="lp-stat"><div class="num">2.4M+</div><div class="label">Accounts opened</div></div>
+<div class="lp-stat"><div class="num">99.9%</div><div class="label">Uptime</div></div>
+<div class="lp-stat"><div class="num">4.8/5</div><div class="label">Customer rating</div></div>
+<div class="lp-stat"><div class="num">24/7</div><div class="label">Support</div></div>
+</div>
 
-      <div style="font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--brass); margin:18px 0 4px;">Security</div>
-      <div class="field"><label>Password</label><input type="password" id="su-password" placeholder="At least 6 characters"></div>
+<div class="lp-eyebrow-tag" style="padding-top:10px;">
+<div class="dash" style="background:#fff;"></div>
+</div>
+<div class="lp-rings">
+<div class="lp-ring">
+<svg width="92" height="92" viewBox="0 0 100 100">
+<circle cx="50" cy="50" r="42" fill="none" stroke="#DCE6F7" stroke-width="6"/>
+<circle cx="50" cy="50" r="42" fill="none" stroke="#3B6FE0" stroke-width="6" stroke-dasharray="264" stroke-dashoffset="26" stroke-linecap="round" transform="rotate(-90 50 50)"/>
+<text x="50" y="56" font-size="20" text-anchor="middle">90%</text>
+</svg>
+<div class="ring-label">Reliability</div>
+</div>
+<div class="lp-ring">
+<svg width="92" height="92" viewBox="0 0 100 100">
+<circle cx="50" cy="50" r="42" fill="none" stroke="#DCE6F7" stroke-width="6"/>
+<circle cx="50" cy="50" r="42" fill="none" stroke="#1F7A5C" stroke-width="6" stroke-dasharray="264" stroke-dashoffset="66" stroke-linecap="round" transform="rotate(-90 50 50)"/>
+<text x="50" y="56" font-size="20" text-anchor="middle">75%</text>
+</svg>
+<div class="ring-label">Growth</div>
+</div>
+<div class="lp-ring">
+<svg width="92" height="92" viewBox="0 0 100 100">
+<circle cx="50" cy="50" r="42" fill="none" stroke="#DCE6F7" stroke-width="6"/>
+<circle cx="50" cy="50" r="42" fill="none" stroke="#1F7A5C" stroke-width="6" stroke-dasharray="264" stroke-dashoffset="8" stroke-linecap="round" transform="rotate(-90 50 50)"/>
+<text x="50" y="56" font-size="20" text-anchor="middle">97%</text>
+</svg>
+<div class="ring-label">Satisfaction</div>
+</div>
+</div>
 
-      <button class="btn btn-primary" id="signup-btn" onclick="handleSignup()">Create account</button>
-      <div class="switch-auth">Already have an account? <a onclick="showScreen('screen-login')">Log in</a></div>
-    </div>
+<div class="lp-section-title">Everything in one place</div>
+<div class="lp-section-sub">Swipe to see what's included with your account.</div>
+<div class="lp-feature-row">
+<div class="lp-feature-card">
+<div class="lp-feature-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M7 17l5-5 5 5M7 7l5 5 5-5"/></svg></div>
+<h4>Instant transfers</h4>
+<p>Send and receive money in seconds, to anyone, anytime.</p>
+</div>
+<div class="lp-feature-card">
+<div class="lp-feature-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+<h4>Savings goals</h4>
+<p>Set a target, fund it from your balance, and track progress.</p>
+</div>
+<div class="lp-feature-card">
+<div class="lp-feature-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></div>
+<h4>Virtual cards</h4>
+<p>Fund a card instantly and spend safely online.</p>
+</div>
+<div class="lp-feature-card">
+<div class="lp-feature-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg></div>
+<h4>Bill payments</h4>
+<p>Electricity, cable, water and more — paid in a tap.</p>
+</div>
+<div class="lp-feature-card">
+<div class="lp-feature-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M3 12l2-2 4 4 8-8 2 2"/></svg></div>
+<h4>Full statements</h4>
+<p>See every transaction with running totals, anytime.</p>
+</div>
+</div>
+
+<div class="lp-eyebrow-tag">
+<div class="dash"></div>
+<div class="tag">Take a look at our</div>
+<h2>Our services</h2>
+</div>
+
+<div class="lp-services-copy">
+      We are trusted by over 3 million happy customers all over the world, we grant loans and credits on the basis of a professional credit assessment. It is in both the Group's and the customer's interest that credit is extended only when the customer can manage the obligation.
+</div>
+<button class="lp-discover-btn" onclick="showScreen('screen-signup')">Discover</button>
+
+<div class="lp-service-v2 mobile-pay-card">
+  <div class="lp-service-v2-graphic big-image">
+    <img src="./mobile-pay.jpeg" alt="Mobile Pay" />
   </div>
-
-  <!-- ============ DASHBOARD ============ -->
-  <div class="screen" id="screen-dashboard">
-    <div class="topbar">
-      <div class="greeting">Good to see you,<br><strong id="dash-name">—</strong></div>
-      <div class="avatar" id="dash-avatar">—</div>
-    </div>
-    <div style="padding:0 20px;">
-      <div class="ledger-card">
-        <div class="ledger-label">Checking Account</div>
-        <div class="ledger-balance amount" id="dash-balance">$0.00</div>
-        <div class="ledger-acct">Acct No. <span id="dash-acct">—</span></div>
-      </div>
-
-      <button class="btn btn-green" style="margin-top:14px;" onclick="openFundModal()">+ Fund Wallet</button>
-
-      <div class="quick-actions">
-        <button class="qa-btn" onclick="openTransferModal()"><div class="qa-icon">↗</div><div class="qa-label">Send</div></button>
-        <button class="qa-btn" onclick="showScreen('screen-savings')"><div class="qa-icon">🪙</div><div class="qa-label">Save</div></button>
-        <button class="qa-btn" onclick="showScreen('screen-bills')"><div class="qa-icon">🧾</div><div class="qa-label">Bills</div></button>
-        <button class="qa-btn" onclick="showScreen('screen-cards')"><div class="qa-icon">💳</div><div class="qa-label">Cards</div></button>
-      </div>
-
-      <div class="section-head"><h3>Recent activity</h3><a onclick="showScreen('screen-history')">See all</a></div>
-      <div id="dash-recent-txns"><div class="empty-state">No transactions yet.</div></div>
-    </div>
+<div class="body"><h4>Mobile Pay</h4><p>Pay directly from your phone — scan, tap, or send, wherever you are.</p></div>
+</div>
+<div class="lp-service-v2 dynamic-pay-card">
+  <div class="lp-service-v2-graphic big-image">
+    <img src="./dynamic-pay.jpeg" alt="Dynamic Pay" />
   </div>
-
-  <!-- ============ SAVINGS ============ -->
-  <div class="screen" id="screen-savings">
-    <div class="topbar"><div class="greeting"><strong>Savings goals</strong></div><div></div></div>
-    <div style="padding:0 20px;">
-      <div id="error-savings"></div>
-      <button class="btn btn-green" style="margin-bottom:18px;" onclick="openModal('modal-new-goal')">+ New goal</button>
-      <div id="goals-list"><div class="empty-state">No savings goals yet. Start one above.</div></div>
-    </div>
+<div class="body"><h4>Dynamic Pay</h4><p>Small businesses improve cash flow with flexible, on-demand payouts.</p></div>
+</div>
+<div class="lp-service-v2 entrepreneurs-card">
+  <div class="lp-service-v2-graphic big-image">
+    <img src="./entrepreneurs.jpeg" alt="Entrepreneurs" />
   </div>
-
-  <!-- ============ BILLS ============ -->
-  <div class="screen" id="screen-bills">
-    <div class="topbar"><div class="greeting"><strong>Pay a bill</strong></div><div></div></div>
-    <div style="padding:0 20px;">
-      <div id="error-bills"></div>
-      <div class="bill-grid">
-        <div class="bill-tile" data-type="PHCN" onclick="selectBillType(this)"><span class="bi">💡</span>Electricity</div>
-        <div class="bill-tile" data-type="DSTV" onclick="selectBillType(this)"><span class="bi">📺</span>Cable TV</div>
-        <div class="bill-tile" data-type="DATA" onclick="selectBillType(this)"><span class="bi">📶</span>Data</div>
-        <div class="bill-tile" data-type="WATER" onclick="selectBillType(this)"><span class="bi">🚰</span>Water</div>
-        <div class="bill-tile" data-type="OTHER" onclick="selectBillType(this)"><span class="bi">➕</span>Other</div>
-      </div>
-      <div class="panel">
-        <div class="field"><label>Biller name</label><input type="text" id="bill-biller" placeholder="e.g. MTN, IKEDC, DSTV"></div>
-        <div class="field"><label>Phone / meter / smartcard number</label><input type="text" id="bill-customer" placeholder="Customer ID"></div>
-        <div class="field"><label>Amount ($)</label><input type="number" id="bill-amount" placeholder="0.00"></div>
-        <button class="btn btn-primary" onclick="handlePayBill()">Pay bill</button>
-      </div>
-    </div>
+<div class="body"><h4>Entrepreneurs</h4><p>Growth-stage support for founders — built for businesses on the move.</p></div>
+</div>
+<div class="lp-service-v2 empire-choice-card">
+  <div class="lp-service-v2-graphic big-image">
+    <img src="./empire-choice.jpeg" alt="Empire Choice" />
   </div>
-
-  <!-- ============ CARDS ============ -->
-  <div class="screen" id="screen-cards">
-    <div class="topbar"><div class="greeting"><strong>Virtual cards</strong></div><div></div></div>
-    <div style="padding:0 20px;">
-      <div id="error-cards"></div>
-      <div id="cards-list"></div>
-      <div class="panel">
-        <div class="field"><label>Fund card with ($)</label><input type="number" id="card-amount" placeholder="Minimum $500"></div>
-        <button class="btn btn-primary" onclick="handleCreateCard()">Request virtual card</button>
-      </div>
-    </div>
+<div class="body"><h4>Empire Choice</h4><p>An arranged overdraft plus a debit card that doubles as a cash card.</p></div>
+</div>
+<div class="lp-service-v2 responsibility-card">
+  <div class="lp-service-v2-graphic big-image">
+    <img src="./responsibility.jpeg" alt="Responsibility" />
   </div>
-
-  <!-- ============ HISTORY / STATEMENT ============ -->
-  <div class="screen" id="screen-history">
-    <div class="topbar"><div class="greeting"><strong>Transactions</strong></div><div></div></div>
-    <div style="padding:0 20px;">
-      <div class="stat-row">
-        <div class="stat-box"><div class="label">Money in</div><div class="value mono" id="stat-in">$0</div></div>
-        <div class="stat-box"><div class="label">Money out</div><div class="value mono" id="stat-out">$0</div></div>
-      </div>
-      <div class="section-head"><h3>Full history</h3></div>
-      <div id="history-list"><div class="empty-state">No transactions yet.</div></div>
-    </div>
+  <div class="body">
+    <h4>Responsibility</h4>
+    <p>How we work responsibly toward customers and contribute to society.</p>
   </div>
+</div>
 
-  <!-- ============ SETTINGS ============ -->
-  <div class="screen" id="screen-settings">
-    <div class="topbar"><div class="greeting"><strong>Settings</strong></div><div></div></div>
-    <div style="padding:0 20px;">
-      <div class="panel">
-        <div class="field"><label>Full name</label><input type="text" id="set-name" disabled></div>
-        <div class="field"><label>Email</label><input type="text" id="set-email" disabled></div>
-        <div class="field"><label>Account number</label><input type="text" id="set-acct" disabled></div>
-      </div>
-      <button class="btn btn-ghost" style="margin-bottom:12px;" onclick="openModal('modal-set-pin')">Set / change transaction PIN</button>
-      <button class="btn btn-danger" onclick="handleLogout()">Log out</button>
-    </div>
-  </div>
+<div class="lp-eyebrow-tag">
+<div class="dash"></div>
+<div class="tag">Stay informed</div>
+<h2>The news</h2>
+</div>
 
-  <!-- bottom nav, only visible once logged in -->
-  <div class="bottom-nav" id="bottom-nav" style="display:none;">
-    <button class="nav-btn active" data-screen="screen-dashboard" onclick="navTo('screen-dashboard')"><div class="nav-icon">🏠</div>Home</button>
-    <button class="nav-btn" data-screen="screen-savings" onclick="navTo('screen-savings')"><div class="nav-icon">🪙</div>Save</button>
-    <button class="nav-btn" data-screen="screen-bills" onclick="navTo('screen-bills')"><div class="nav-icon">🧾</div>Bills</button>
-    <button class="nav-btn" data-screen="screen-cards" onclick="navTo('screen-cards')"><div class="nav-icon">💳</div>Cards</button>
-    <button class="nav-btn" data-screen="screen-settings" onclick="navTo('screen-settings')"><div class="nav-icon">⚙️</div>More</button>
+<div class="lp-news-card">
+<img class="lp-news-thumb" src="./news-1.jpeg" alt="How to get the best loan online" />
+<span class="lp-news-date">Jul 18, 2026</span>
+<h5>How to get the best loan online</h5>
+</div>
+<div class="lp-news-card">
+<img class="lp-news-thumb" src="./news-2.jpeg" alt="A new way to finance your dream home" />
+<span class="lp-news-date">Jul 18, 2026</span>
+<h5>A new way to finance your dream home</h5>
+</div>
+<div class="lp-news-card">
+<img class="lp-news-thumb" src="./news-3.jpeg" alt="10 tips to get the best loan for you" />
+<span class="lp-news-date">Jul 18, 2026</span>
+<h5>10 tips to get the best loan for you</h5>
+</div>
+<div class="lp-eyebrow-tag">
+<div class="dash"></div>
+<div class="tag">Built for</div>
+<h2>Every kind of customer</h2>
+</div>
+
+<div class="lp-service-v2 retail-customers-card">
+  <div class="lp-service-v2-graphic big-image">
+    <img src="./retail.jpeg" alt="Retail Customers" />
   </div>
+<h5>Retail customers</h5>
+</div>
+<div class="lp-service-v2 corporate-customers-card">
+  <div class="lp-service-v2-graphic ">
+    <img src="./corporate.jpeg" alt="Corporate Customers" />
+  </div>
+<h5>Corporate customers</h5>
+</div>
+
+<div class="lp-app-section">
+<h3>Convenient banking with our Meridian app</h3>
+<button class="lp-app-btn" onclick="showScreen('screen-signup')">Explore our app</button>
+
+<div class="lp-phone">
+<div class="lp-phone-notch"></div>
+<div class="lp-phone-screen">
+<div class="lp-phone-topbar">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+<div style="font-family:'Fraunces',serif; font-weight:700; font-size:13px; color:#012169;">M Meridian</div>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+</div>
+<div class="lp-phone-tabs">
+<span>Accounts</span><span class="active">Dashboard</span>
+</div>
+<div class="lp-phone-body">
+<div class="lp-phone-label">Select your account</div>
+<div style="background:#F7F9FC; border-radius:10px; padding:10px 12px; display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; font-size:12px; font-weight:700; color:#111827;">
+<span>M Meridian Checking</span>
+<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#5B6472" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+</div>
+<div class="lp-phone-cards">
+<div class="lp-phone-card">
+<div class="icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+<div class="label">My Checking</div>
+<div class="value">$4,000.00</div>
+</div>
+<div class="lp-phone-card">
+<div class="icon" style="background:#1F7A5C;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/></svg></div>
+<div class="label">Meridian Card</div>
+<div class="value">$2,543.21</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="lp-mcard-wrap">
+<div class="lp-eyebrow-tag" style="padding-top:0;">
+<div class="dash"></div>
+<div class="tag">Your account, your card</div>
+<h2>Meet the Meridian Card</h2>
+</div>
+<div class="lp-mcard">
+<div class="lp-mcard-chip"></div>
+<div class="lp-mcard-number">•••• •••• •••• 4821</div>
+<div class="lp-mcard-row">
+<div>Card holder<b>J. SMITH</b></div>
+<div>Expires<b>08/29</b></div>
+<div>PIN<b>xxxx</b></div>
+</div>
+<div class="lp-mcard-brand">M</div>
+</div>
+<div class="lp-mcard-note">Every account comes with a Meridian card — the number and PIN shown here are just for illustration, yours stays private and only visible to you.</div>
+</div>
+
+<div class="lp-writeup" id="lp-section-about">
+<div class="lp-writeup-eyebrow">Who we are</div>
+<h2>About us</h2>
+<p>Meridian was founded in 1992 on a simple idea: banking should keep up with how people actually live, not the other way around. Over three decades, we've grown from a single branch into a full-service bank, while staying focused on what mattered from day one — fast, clear service, without the runaround.</p>
+<p>Today, that same philosophy shapes our digital account: fast transfers, clear pricing, and an app that works the way modern banking should — plus everyday checking, savings goals, virtual cards, and bill pay, all from a single account with no hidden fees and no branch visits required.</p>
+<div class="lp-writeup-stats">
+<div><div class="num">2.4M+</div><div class="lbl">Customers</div></div>
+<div><div class="num">1992</div><div class="lbl">Founded</div></div>
+<div><div class="num">24/7</div><div class="lbl">Support</div></div>
+</div>
+</div>
+
+<div class="lp-writeup" id="lp-section-investor">
+<div class="lp-writeup-eyebrow">Investor relations</div>
+<h2>Our growth, our numbers</h2>
+<p>Meridian has grown steadily by focusing on what matters: reliability, customer trust, and disciplined risk management. We share regular updates on our performance, our approach to lending, and our long-term strategy with partners and stakeholders.</p>
+<ul>
+<li>Quarterly performance summaries and growth reporting</li>
+<li>Transparent approach to credit and risk assessment</li>
+<li>Long-term partnerships built on stability, not speculation</li>
+</ul>
+</div>
+
+<div class="lp-writeup" id="lp-section-responsibility">
+<div class="lp-writeup-eyebrow">Doing right</div>
+<h2>Responsibility</h2>
+<p>We believe a bank's first responsibility is to the people who trust it with their money. That means lending carefully, being upfront about fees, and never extending credit a customer can't realistically manage.</p>
+<p>It also means investing in the communities we serve — through financial literacy resources, support for local small businesses, and a genuine commitment to making banking more accessible, not less.</p>
+</div>
+
+<div class="lp-writeup" id="lp-section-product">
+<div class="lp-writeup-eyebrow">What's included</div>
+<h2>Product</h2>
+<p>One Meridian account gives you everything you need to manage your money day to day — no juggling multiple apps or accounts.</p>
+<ul>
+<li><strong>Checking</strong> — instant transfers, real-time balance, no minimums</li>
+<li><strong>Savings goals</strong> — set a target and fund it whenever you like</li>
+<li><strong>Virtual cards</strong> — fund instantly, spend safely online</li>
+<li><strong>Bill pay</strong> — electricity, cable, water, and more in one place</li>
+</ul>
+</div>
+
+<div class="lp-writeup" id="lp-section-contact">
+<div class="lp-writeup-eyebrow">We're here</div>
+<h2>Contact us</h2>
+<p>Have a question about your account, or thinking about opening one? Reach out any time — our team responds around the clock.</p>
+<div class="lp-writeup-contact-row">
+<div class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M4 6l8 7 8-7"/></svg></div>
+<div class="txt">support@meridianbank.com<small>General enquiries and account help</small></div>
+</div>
+<div class="lp-writeup-contact-row">
+<div class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+<div class="txt">24/7 in-app support<small>Fastest way to reach us once you're signed in</small></div>
+</div>
+</div>
+
+<div class="lp-footer-cta">
+<h3>Banking made simple.</h3>
+<p>Open an account in under a minute. No paperwork, no branch visit.</p>
+<button class="lp-btn-primary" onclick="showScreen('screen-signup')">Get started</button>
+</div>
+
+<footer class="lp-site-footer" role="contentinfo">
+<div class="lp-footer-brand">
+<div class="mark" aria-hidden="true">M</div>
+<div class="name">Meridian Bank</div>
+</div>
+
+<nav class="lp-footer-links" aria-label="Footer">
+<a href="#" onclick="return false;">Privacy Policy</a>
+<a href="#" onclick="return false;">Cookies Policy</a>
+<a href="#" onclick="return false;">Security &amp; Legal</a>
+<a href="#" onclick="return false;">Data Collection Notice</a>
+<a href="#" onclick="return false;">Terms of Use</a>
+<a href="#" onclick="return false;">Fraud Prevention</a>
+<a href="#" onclick="return false;">Careers</a>
+<a href="#" onclick="return false;">Sitemap</a>
+<a href="#" onclick="return false;">Accessibility</a>
+<a href="#" onclick="lpScrollTo('lp-section-about'); return false;">About Meridian Bank</a>
+</nav>
+
+<div class="lp-footer-social" role="group" aria-label="Meridian Bank on social media">
+<a href="#" aria-label="Meridian Bank on Facebook" onclick="return false;">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 22v-9h3l1-4h-4V7c0-1 .3-2 2-2h2V1.1C16.6 1 15.4 1 14 1c-3 0-5 1.8-5 5v3H6v4h3v9h4z"/></svg>
+</a>
+<a href="#" aria-label="Meridian Bank on LinkedIn" onclick="return false;">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 11-.02 5 2.5 2.5 0 01.02-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2 3.77-2 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.6c0-1.34-.03-3.06-1.87-3.06-1.87 0-2.16 1.46-2.16 2.96V21H9z"/></svg>
+</a>
+<a href="#" aria-label="Meridian Bank on Instagram" onclick="return false;">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+</a>
+<a href="#" aria-label="Meridian Bank on Pinterest" onclick="return false;">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.5 2 3 5.9 3 10.3c0 2.7 1.4 4.5 2.3 4.5.4 0 .6-1.1.6-1.4 0-.4-.9-1.1-.9-2.9 0-3.5 2.7-6 6.4-6 3.1 0 5.4 1.8 5.4 4.8 0 2.3-.9 6.6-3.9 6.6-1 0-1.9-.8-1.6-1.9.3-1.3 1-2.7 1-3.7 0-2.3-3.3-2-3.3.9 0 .8.3 1.4.3 1.4s-1 4.4-1.2 5.2c-.3 1.4-.1 3.1 0 3.3.1.1.2.1.3 0 .1-.1 1.5-1.9 2-3.7.1-.5.6-2.4.6-2.4.3.6 1.2 1.1 2.2 1.1 2.9 0 5-2.7 5-6.2C20.2 4.9 16.9 2 12 2z"/></svg>
+</a>
+<a href="#" aria-label="Meridian Bank on YouTube" onclick="return false;">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23 12s0-3.4-.4-5a3 3 0 00-2.1-2.1C18.9 4.5 12 4.5 12 4.5s-6.9 0-8.5.4A3 3 0 001.4 7C1 8.6 1 12 1 12s0 3.4.4 5a3 3 0 002.1 2.1c1.6.4 8.5.4 8.5.4s6.9 0 8.5-.4a3 3 0 002.1-2.1c.4-1.6.4-5 .4-5zM9.8 15.5v-7l6 3.5-6 3.5z"/></svg>
+</a>
+<a href="#" aria-label="Meridian Bank on X" onclick="return false;">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.9 2h3.3l-7.2 8.2L23.5 22h-6.6l-5.2-6.8L5.7 22H2.4l7.7-8.8L1 2h6.8l4.7 6.2L18.9 2zm-1.2 18h1.8L7.4 3.9H5.5L17.7 20z"/></svg>
+</a>
+</div>
+
+<section class="lp-footer-notice" aria-labelledby="lp-invest-heading">
+<h4 id="lp-invest-heading">Investment and Insurance Products</h4>
+<ul>
+<li>Not insured by the relevant government deposit insurance scheme.</li>
+<li>Not a bank deposit or guaranteed by Meridian Bank.</li>
+<li>Subject to investment risks, including possible loss of principal.</li>
+</ul>
+</section>
+
+<p class="lp-footer-disclaimer">
+        Investment products and services are offered through Meridian Bank Investment Services, a division of Meridian Bank. Availability of products and features varies by account type and eligibility.
+</p>
+
+<div class="lp-footer-bottom">
+<span>&copy; 2026 Meridian Bank. All rights reserved.</span>
+<span>Member of a licensed banking partner network.</span>
+</div>
+</footer>
+</div>
+
+<!-- ============ LOGIN ============ -->
+<div class="screen" id="screen-login">
+<div class="auth-wrap">
+<div class="brand"><div class="brand-mark">M</div><div class="brand-name">Meridian</div></div>
+<div class="auth-title">Welcome back.</div>
+<div class="auth-sub">Log in to check your balance and move money.</div>
+<div id="login-error"></div>
+<div class="field"><label>Email</label><input type="email" id="login-email" placeholder="you@email.com"></div>
+<div class="field"><label>Password</label><input type="password" id="login-password" placeholder="••••••••"></div>
+<button class="btn btn-primary" id="login-btn" onclick="handleLogin()">Log in</button>
+<div class="switch-auth">New here? <a onclick="showScreen('screen-signup')">Create an account</a></div>
+</div>
+</div>
+
+<!-- ============ SIGNUP ============ -->
+<div class="screen" id="screen-signup">
+<div class="auth-wrap">
+<div class="brand"><div class="brand-mark">M</div><div class="brand-name">Meridian</div></div>
+<div class="auth-title">Open your account.</div>
+<div class="auth-sub">A few details so we can set your account up properly.</div>
+<div id="signup-error"></div>
+
+<div style="font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--brass); margin:18px 0 4px;">Personal details</div>
+<div class="field"><label>Full name</label><input type="text" id="su-name" placeholder="John Smith"></div>
+<div class="field"><label>Date of birth</label><input type="date" id="su-dob"></div>
+<div class="field"><label>Email</label><input type="email" id="su-email" placeholder="you@email.com"></div>
+<div class="field"><label>Phone number</label><input type="tel" id="su-phone" placeholder="(555) 123-4567"></div>
+<div class="field"><label>Occupation</label><input type="text" id="su-occupation" placeholder="e.g. Manager"></div>
+
+<div style="font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--brass); margin:18px 0 4px;">Home address</div>
+<div class="field"><label>Street address</label><input type="text" id="su-address" placeholder="123 Main Street"></div>
+<div class="field"><label>City</label><input type="text" id="su-city" placeholder="New York"></div>
+<div class="field"><label>State</label><input type="text" id="su-state" placeholder="New York"></div>
+<div class="field"><label>ZIP code</label><input type="text" id="su-postal" placeholder="10001"></div>
+<div class="field">
+<label>Country</label>
+<select id="su-country" class="country-select"></select>
+</div>
+
+<div style="font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--brass); margin:18px 0 4px;">Next of kin</div>
+<div class="field"><label>Full name</label><input type="text" id="su-nok-name" placeholder="Next of kin's name"></div>
+<div class="field"><label>Relationship</label><input type="text" id="su-nok-relationship" placeholder="e.g. Sister, Spouse, Father"></div>
+<div class="field"><label>Phone number</label><input type="tel" id="su-nok-phone" placeholder="(555) 123-4567"></div>
+
+<div style="font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--brass); margin:18px 0 4px;">Security</div>
+<div class="field"><label>Password</label><input type="password" id="su-password" placeholder="At least 6 characters"></div>
+<div class="field"><label>Confirm password</label><input type="password" id="su-password-confirm" placeholder="Re-enter your password"></div>
+
+<button class="btn btn-primary" id="signup-btn" onclick="handleSignup()">Create account</button>
+<div class="switch-auth">Already have an account? <a onclick="showScreen('screen-login')">Log in</a></div>
+</div>
+</div>
+
+<!-- ============ DASHBOARD ============ -->
+<div class="screen" id="screen-dashboard">
+<div class="topbar">
+<div class="greeting">Good to see you,<br><strong id="dash-name">—</strong></div>
+<div class="avatar" id="dash-avatar">—</div>
+</div>
+<div style="padding:0 20px;">
+<div class="ledger-card">
+<div class="ledger-label">Checking Account</div>
+<div class="ledger-balance amount" id="dash-balance">$0.00</div>
+<div class="ledger-acct">Acct No. <span id="dash-acct">—</span></div>
+<div id="real-account-block" style="margin-top:10px;"></div>
+</div>
+
+<button class="btn btn-green" style="margin-top:14px;" onclick="openFundModal()">+ Fund Wallet</button>
+
+<div class="quick-actions">
+<button class="qa-btn" onclick="openTransferModal()"><div class="qa-icon">↗</div><div class="qa-label">Send</div></button>
+<button class="qa-btn" onclick="showScreen('screen-savings')"><div class="qa-icon">🪙</div><div class="qa-label">Save</div></button>
+<button class="qa-btn" onclick="showScreen('screen-bills')"><div class="qa-icon">🧾</div><div class="qa-label">Bills</div></button>
+<button class="qa-btn" onclick="showScreen('screen-cards')"><div class="qa-icon">💳</div><div class="qa-label">Cards</div></button>
+</div>
+
+<div class="section-head"><h3>Recent activity</h3><a onclick="showScreen('screen-history')">See all</a></div>
+<div id="dash-recent-txns"><div class="empty-state">No transactions yet.</div></div>
+</div>
+</div>
+
+<!-- ============ SAVINGS ============ -->
+<div class="screen" id="screen-savings">
+<div class="topbar"><div class="greeting"><strong>Savings goals</strong></div><div></div></div>
+<div style="padding:0 20px;">
+<div id="error-savings"></div>
+<button class="btn btn-green" style="margin-bottom:18px;" onclick="openModal('modal-new-goal')">+ New goal</button>
+<div id="goals-list"><div class="empty-state">No savings goals yet. Start one above.</div></div>
+</div>
+</div>
+
+<!-- ============ BILLS ============ -->
+<div class="screen" id="screen-bills">
+<div class="topbar"><div class="greeting"><strong>Pay a bill</strong></div><div></div></div>
+<div style="padding:0 20px;">
+<div id="error-bills"></div>
+<div class="bill-grid">
+<div class="bill-tile" data-type="PHCN" onclick="selectBillType(this)"><span class="bi">💡</span>Electricity</div>
+<div class="bill-tile" data-type="DSTV" onclick="selectBillType(this)"><span class="bi">📺</span>Cable TV</div>
+<div class="bill-tile" data-type="DATA" onclick="selectBillType(this)"><span class="bi">📶</span>Data</div>
+<div class="bill-tile" data-type="WATER" onclick="selectBillType(this)"><span class="bi">🚰</span>Water</div>
+<div class="bill-tile" data-type="OTHER" onclick="selectBillType(this)"><span class="bi">➕</span>Other</div>
+</div>
+<div class="panel">
+<div class="field"><label>Biller name</label><input type="text" id="bill-biller" placeholder="e.g. MTN, IKEDC, DSTV"></div>
+<div class="field"><label>Phone / meter / smartcard number</label><input type="text" id="bill-customer" placeholder="Customer ID"></div>
+<div class="field"><label>Amount ($)</label><input type="number" id="bill-amount" placeholder="0.00"></div>
+<button class="btn btn-primary" onclick="handlePayBill()">Pay bill</button>
+</div>
+</div>
+</div>
+
+<!-- ============ CARDS ============ -->
+<div class="screen" id="screen-cards">
+<div class="topbar"><div class="greeting"><strong>Virtual cards</strong></div><div></div></div>
+<div style="padding:0 20px;">
+<div id="error-cards"></div>
+<div id="cards-list"></div>
+<div class="panel">
+<div class="field"><label>Fund card with ($)</label><input type="number" id="card-amount" placeholder="Minimum $500"></div>
+<button class="btn btn-primary" onclick="handleCreateCard()">Request virtual card</button>
+</div>
+</div>
+</div>
+
+<!-- ============ HISTORY / STATEMENT ============ -->
+<div class="screen" id="screen-history">
+<div class="topbar"><div class="greeting"><strong>Transactions</strong></div><div></div></div>
+<div style="padding:0 20px;">
+<div class="stat-row">
+<div class="stat-box"><div class="label">Money in</div><div class="value mono" id="stat-in">$0</div></div>
+<div class="stat-box"><div class="label">Money out</div><div class="value mono" id="stat-out">$0</div></div>
+</div>
+<div class="section-head"><h3>Full history</h3></div>
+<div id="history-list"><div class="empty-state">No transactions yet.</div></div>
+</div>
+</div>
+
+<!-- ============ SETTINGS ============ -->
+<div class="screen" id="screen-settings">
+<div class="topbar"><div class="greeting"><strong>Settings</strong></div><div></div></div>
+<div style="padding:0 20px;">
+<div class="panel">
+<div class="field"><label>Full name</label><input type="text" id="set-name" disabled></div>
+<div class="field"><label>Email</label><input type="text" id="set-email" disabled></div>
+<div class="field"><label>Account number</label><input type="text" id="set-acct" disabled></div>
+</div>
+<button class="btn btn-ghost" style="margin-bottom:12px;" onclick="openModal('modal-set-pin')">Set / change transaction PIN</button>
+<button class="btn btn-danger" onclick="handleLogout()">Log out</button>
+</div>
+</div>
+
+<!-- bottom nav, only visible once logged in -->
+<div class="bottom-nav" id="bottom-nav" style="display:none;">
+<button class="nav-btn active" data-screen="screen-dashboard" onclick="navTo('screen-dashboard')"><div class="nav-icon">🏠</div>Home</button>
+<button class="nav-btn" data-screen="screen-savings" onclick="navTo('screen-savings')"><div class="nav-icon">🪙</div>Save</button>
+<button class="nav-btn" data-screen="screen-bills" onclick="navTo('screen-bills')"><div class="nav-icon">🧾</div>Bills</button>
+<button class="nav-btn" data-screen="screen-cards" onclick="navTo('screen-cards')"><div class="nav-icon">💳</div>Cards</button>
+<button class="nav-btn" data-screen="screen-settings" onclick="navTo('screen-settings')"><div class="nav-icon">⚙️</div>More</button>
+</div>
 
 </div>
 
 <!-- ============ MODALS ============ -->
 
+<div class="modal-backdrop" id="modal-activate-account">
+<div class="modal-sheet">
+<h3>Activate your real account number</h3>
+<p style="font-size:13px; color:var(--text-dim); margin-bottom:16px; line-height:1.55;">
+      This is the account number people will use to send you real money from any bank. We need your BVN to issue it — this is a regulatory requirement, not optional, and it's sent directly to Flutterwave, never stored by us.
+</p>
+<div id="error-activate"></div>
+<div class="field"><label>BVN (11 digits)</label><input type="text" inputmode="numeric" maxlength="11" id="activate-bvn" placeholder="12345678901"></div>
+<button class="btn btn-primary" id="activate-btn" onclick="submitActivateAccount()">Activate account number</button>
+</div>
+</div>
+
 <div class="modal-backdrop" id="modal-fund">
-  <div class="modal-sheet">
-    <h3>Fund your wallet</h3>
-    <div id="error-fund"></div>
-    <div class="field"><label>Amount ($)</label><input type="number" id="fund-amount" placeholder="Minimum $1"></div>
-    <button class="btn btn-primary" onclick="submitFund()">Continue to payment</button>
-  </div>
+<div class="modal-sheet">
+<h3>Fund your wallet</h3>
+<div id="error-fund"></div>
+<div class="field"><label>Amount ($)</label><input type="number" id="fund-amount" placeholder="Minimum $1"></div>
+<button class="btn btn-primary" onclick="submitFund()">Continue to payment</button>
+</div>
 </div>
 
 <div class="modal-backdrop" id="modal-transfer">
-  <div class="modal-sheet">
-    <h3>Send money</h3>
-    <div id="error-transfer"></div>
-    <div class="field">
-      <label>Send to</label>
-      <select id="transfer-type" onchange="toggleTransferFields()" style="width:100%; background:var(--ink); border:1px solid var(--line-strong); color:var(--parchment); padding:14px 15px; border-radius:11px; font-size:15px;">
-        <option value="internal">Another Meridian account</option>
-        <option value="external">External bank account</option>
-      </select>
-    </div>
-    <div class="field" id="ext-bank-field" style="display:none;"><label>Bank code</label><input type="text" id="transfer-bankcode" placeholder="e.g. 044 for Access Bank"></div>
-    <div class="field"><label>Account number</label><input type="text" id="transfer-account" placeholder="10-digit account number"></div>
-    <div class="field"><label>Amount ($)</label><input type="number" id="transfer-amount" placeholder="0.00"></div>
-    <div class="field"><label>Note (optional)</label><input type="text" id="transfer-note" placeholder="What's this for?"></div>
-    <button class="btn btn-primary" onclick="submitTransfer()">Continue</button>
-  </div>
+<div class="modal-sheet">
+<h3>Send money</h3>
+<div id="error-transfer"></div>
+<div class="field">
+<label>Send to</label>
+<select id="transfer-type" onchange="toggleTransferFields()" style="width:100%; background:var(--ink); border:1px solid var(--line-strong); color:var(--parchment); padding:14px 15px; border-radius:11px; font-size:15px;">
+<option value="internal">Another Meridian account</option>
+<option value="external">External bank account</option>
+</select>
+</div>
+<div class="field" id="ext-bank-field" style="display:none;"><label>Bank code</label><input type="text" id="transfer-bankcode" placeholder="e.g. 044 for Access Bank"></div>
+<div class="field"><label>Account number</label><input type="text" id="transfer-account" placeholder="10-digit account number"></div>
+<div class="field"><label>Amount ($)</label><input type="number" id="transfer-amount" placeholder="0.00"></div>
+<div class="field"><label>Note (optional)</label><input type="text" id="transfer-note" placeholder="What's this for?"></div>
+<button class="btn btn-primary" onclick="submitTransfer()">Continue</button>
+</div>
 </div>
 
 <div class="modal-backdrop" id="modal-new-goal">
-  <div class="modal-sheet">
-    <h3>New savings goal</h3>
-    <div class="field"><label>Goal name</label><input type="text" id="goal-name" placeholder="e.g. New laptop"></div>
-    <div class="field"><label>Target amount ($)</label><input type="number" id="goal-target" placeholder="0.00"></div>
-    <div class="field"><label>Target date (optional)</label><input type="date" id="goal-date"></div>
-    <button class="btn btn-primary" onclick="handleCreateGoal()">Create goal</button>
-  </div>
+<div class="modal-sheet">
+<h3>New savings goal</h3>
+<div class="field"><label>Goal name</label><input type="text" id="goal-name" placeholder="e.g. New laptop"></div>
+<div class="field"><label>Target amount ($)</label><input type="number" id="goal-target" placeholder="0.00"></div>
+<div class="field"><label>Target date (optional)</label><input type="date" id="goal-date"></div>
+<button class="btn btn-primary" onclick="handleCreateGoal()">Create goal</button>
+</div>
 </div>
 
 <div class="modal-backdrop" id="modal-fund-goal">
-  <div class="modal-sheet">
-    <h3>Add to goal</h3>
-    <div class="field"><label>Amount ($)</label><input type="number" id="fund-goal-amount" placeholder="0.00"></div>
-    <button class="btn btn-primary" onclick="submitFundGoal()">Add funds</button>
-  </div>
+<div class="modal-sheet">
+<h3>Add to goal</h3>
+<div class="field"><label>Amount ($)</label><input type="number" id="fund-goal-amount" placeholder="0.00"></div>
+<button class="btn btn-primary" onclick="submitFundGoal()">Add funds</button>
+</div>
 </div>
 
 <div class="modal-backdrop" id="modal-set-pin">
-  <div class="modal-sheet">
-    <h3>Set your 4-digit transaction PIN</h3>
-    <div class="pin-dots" id="pin-dots">
-      <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
-    </div>
-    <div class="keypad" id="pin-keypad"></div>
-  </div>
+<div class="modal-sheet">
+<h3>Set your 4-digit transaction PIN</h3>
+<div class="pin-dots" id="pin-dots">
+<div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+</div>
+<div class="keypad" id="pin-keypad"></div>
+</div>
 </div>
 
 <div class="modal-backdrop" id="modal-enter-pin">
-  <div class="modal-sheet">
-    <h3>Enter your PIN to confirm</h3>
-    <div class="pin-dots" id="confirm-pin-dots">
-      <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
-    </div>
-    <div class="keypad" id="confirm-pin-keypad"></div>
-  </div>
+<div class="modal-sheet">
+<h3>Enter your PIN to confirm</h3>
+<div class="pin-dots" id="confirm-pin-dots">
+<div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+</div>
+<div class="keypad" id="confirm-pin-keypad"></div>
+</div>
 </div>
 
 <script>
@@ -584,7 +1250,7 @@
    the backend somewhere (Render, Railway, etc.)
    ========================================================================= */
 
-const API_BASE = "https://meridian-backend-0ga4.onrender.com/api";
+const API_BASE = "http://127.0.0.1:5000/api";
 
 let state = {
   token: localStorage.getItem("ledger_token") || null,
@@ -602,7 +1268,7 @@ function fmtNaira(n) {
 
 function fmtDate(iso) {
   const d = new Date(iso);
-  return d.toLocaleDateString("en-NG", { day: "numeric", month: "short" }) + " · " +
+  return d.toLocaleDateString("en-NG", { day: "numeric", month: "short" }) + " • " +
          d.toLocaleTimeString("en-NG", { hour: "2-digit", minute: "2-digit" });
 }
 
@@ -617,9 +1283,25 @@ async function api(path, options = {}) {
   return data;
 }
 
+function toggleLpMenu() {
+  document.getElementById("lp-menu-dropdown").classList.toggle("open");
+}
+
+function lpScrollTo(sectionId) {
+  toggleLpMenu();
+  const el = document.getElementById(sectionId);
+  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
 function showScreen(id) {
-  document.querySelectorAll(".screen").forEach((s) => s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
+  const overlay = document.getElementById("loading-overlay");
+  overlay.classList.add("active");
+  setTimeout(() => {
+    document.querySelectorAll(".screen").forEach((s) => s.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+    window.scrollTo(0, 0);
+    setTimeout(() => overlay.classList.remove("active"), 120);
+  }, 380);
 }
 
 function navTo(id) {
@@ -675,15 +1357,23 @@ async function handleSignup() {
   const city = document.getElementById("su-city").value.trim();
   const state_ = document.getElementById("su-state").value.trim();
   const postalCode = document.getElementById("su-postal").value.trim();
+  const country = document.getElementById("su-country").value.trim();
   const nokName = document.getElementById("su-nok-name").value.trim();
   const nokRelationship = document.getElementById("su-nok-relationship").value.trim();
   const nokPhone = document.getElementById("su-nok-phone").value.trim();
   const password = document.getElementById("su-password").value;
+  const passwordConfirm = document.getElementById("su-password-confirm").value;
+
+  if (password !== passwordConfirm) {
+    showError("signup-error", "Passwords don't match.");
+    return;
+  }
+
   const btn = document.getElementById("signup-btn");
   btn.disabled = true; btn.textContent = "Creating account…";
   try {
     const data = await api("/auth/signup", { method: "POST", body: JSON.stringify({
-      fullName, dob, email, phone, occupation, address, city, state: state_, postalCode,
+      fullName, dob, email, phone, occupation, address, city, state: state_, postalCode, country,
       nokName, nokRelationship, nokPhone, password
     }) });
     setSession(data.token, data.user);
@@ -714,13 +1404,14 @@ function handleLogout() {
 
 function enterApp() {
   document.getElementById("bottom-nav").style.display = "flex";
-  document.getElementById("dash-name").textContent = state.user.fullName.split(" ")[0];
+  document.getElementById("dash-name").textContent = state.user.fullName.split("")[0];
   document.getElementById("dash-avatar").textContent = state.user.fullName.charAt(0).toUpperCase();
   document.getElementById("dash-acct").textContent = state.user.accountNumber;
   document.getElementById("dash-balance").textContent = fmtNaira(state.user.balance);
   navTo("screen-dashboard");
   refreshBalance();
   loadRecentTxns();
+  checkVirtualAccount();
 }
 
 async function refreshBalance() {
@@ -732,19 +1423,66 @@ async function refreshBalance() {
   } catch (err) { /* silent - balance will refresh next load */ }
 }
 
+/* ---------------- Real account number (virtual account) ---------------- */
+
+async function checkVirtualAccount() {
+  const block = document.getElementById("real-account-block");
+  try {
+    const data = await api("/wallet/virtual-account");
+    if (data.active) {
+      block.innerHTML = `
+<div style="background:rgba(47,158,120,0.12); border:1px solid rgba(47,158,120,0.3); border-radius:10px; padding:10px 12px;">
+<div style="font-size:10.5px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:3px;">Real account for receiving money</div>
+<div style="font-size:14px; font-weight:600; font-family:'IBM Plex Mono',monospace;">${data.accountNumber}</div>
+<div style="font-size:12px; color:var(--text-dim); margin-top:2px;">${data.bankName}</div>
+</div>`;
+    } else {
+      block.innerHTML = `<button class="btn btn-ghost" style="padding:10px; font-size:13px;" onclick="openActivateModal()">Activate real account number</button>`;
+    }
+  } catch (err) {
+    block.innerHTML = "";
+  }
+}
+
+function openActivateModal() {
+  document.getElementById("activate-bvn").value = "";
+  clearError("error-activate");
+  openModal("modal-activate-account");
+}
+
+async function submitActivateAccount() {
+  clearError("error-activate");
+  const bvn = document.getElementById("activate-bvn").value.trim();
+  if (!/^\d{11}$/.test(bvn)) {
+    showError("error-activate", "BVN must be exactly 11 digits.");
+    return;
+  }
+  const btn = document.getElementById("activate-btn");
+  btn.disabled = true; btn.textContent = "Activating…";
+  try {
+    await api("/wallet/virtual-account/create", { method: "POST", body: JSON.stringify({ bvn }) });
+    closeModal("modal-activate-account");
+    checkVirtualAccount();
+  } catch (err) {
+    showError("error-activate", err.message);
+  } finally {
+    btn.disabled = false; btn.textContent = "Activate account number";
+  }
+}
+
 /* ---------------- Dashboard / transactions ---------------- */
 
 function renderTxnRow(t) {
   const isCredit = t.type === "credit";
   return `
-    <div class="txn-row">
-      <div class="txn-dot ${t.type}">${isCredit ? "↓" : "↑"}</div>
-      <div class="txn-info">
-        <div class="txn-title">${t.counterparty || t.category}</div>
-        <div class="txn-date">${fmtDate(t.createdAt)}</div>
-      </div>
-      <div class="txn-amt ${t.type} amount">${isCredit ? "+" : "-"}${fmtNaira(t.amount)}</div>
-    </div>`;
+<div class="txn-row">
+<div class="txn-dot ${t.type}">${isCredit ? "↓" : "↑"}</div>
+<div class="txn-info">
+<div class="txn-title">${t.counterparty || t.category}</div>
+<div class="txn-date">${fmtDate(t.createdAt)}</div>
+</div>
+<div class="txn-amt ${t.type} amount">${isCredit ? "+" : "-"}${fmtNaira(t.amount)}</div>
+</div>`;
 }
 
 async function loadRecentTxns() {
@@ -869,12 +1607,12 @@ async function loadGoals() {
     container.innerHTML = goals.map((g) => {
       const pct = Math.min(100, Math.round((g.savedAmount / g.targetAmount) * 100));
       return `
-        <div class="goal-card">
-          <div class="goal-name">${g.name}</div>
-          <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
-          <div class="goal-figures"><span><strong>${fmtNaira(g.savedAmount)}</strong> saved</span><span>of ${fmtNaira(g.targetAmount)}</span></div>
-          <button class="btn btn-ghost" style="margin-top:12px;" onclick="openFundGoal('${g.id}')">Add money</button>
-        </div>`;
+<div class="goal-card">
+<div class="goal-name">${g.name}</div>
+<div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+<div class="goal-figures"><span><strong>${fmtNaira(g.savedAmount)}</strong> saved</span><span>of ${fmtNaira(g.targetAmount)}</span></div>
+<button class="btn btn-ghost" style="margin-top:12px;" onclick="openFundGoal('${g.id}')">Add money</button>
+</div>`;
     }).join("");
   } catch (err) {
     showError("error-savings", err.message);
@@ -918,6 +1656,36 @@ async function submitFundGoal() {
 
 /* ---------------- Bills ---------------- */
 
+const COUNTRIES = [
+"Afghanistan","Albania","Algeria","Andorra","Angola","Argentina","Armenia","Australia","Austria","Azerbaijan",
+"Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia",
+"Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burundi","Cabo Verde","Cambodia","Cameroon",
+"Canada","Central African Republic","Chad","Chile","China","Colombia","Comoros","Congo","Costa Rica","Croatia",
+"Cuba","Cyprus","Czechia","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador",
+"Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia","Fiji","Finland","France","Gabon","Gambia",
+"Georgia","Germany","Ghana","Greece","Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti",
+"Honduras","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel","Italy",
+"Ivory Coast","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati","Kosovo","Kuwait","Kyrgyzstan",
+"Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Madagascar",
+"Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia",
+"Moldova","Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal",
+"Netherlands","New Zealand","Nicaragua","Niger","Nigeria","North Korea","North Macedonia","Norway","Oman","Pakistan",
+"Palau","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Qatar",
+"Romania","Russia","Rwanda","Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia",
+"Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa",
+"South Korea","South Sudan","Spain","Sri Lanka","Sudan","Suriname","Sweden","Switzerland","Syria","Taiwan",
+"Tajikistan","Tanzania","Thailand","Timor-Leste","Togo","Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan",
+"Tuvalu","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States","Uruguay","Uzbekistan","Vanuatu","Vatican City",
+"Venezuela","Vietnam","Yemen","Zambia","Zimbabwe"
+];
+
+function populateCountrySelect() {
+  const select = document.getElementById("su-country");
+  if (!select || select.options.length) return;
+  select.innerHTML = '<option value="">Select country</option>' +
+    COUNTRIES.map((c) => `<option value="${c}">${c}</option>`).join("");
+}
+
 function selectBillType(el) {
   document.querySelectorAll(".bill-tile").forEach((t) => t.classList.remove("selected"));
   el.classList.add("selected");
@@ -954,11 +1722,11 @@ async function loadCards() {
     const container = document.getElementById("cards-list");
     if (!cards.length) { container.innerHTML = ""; return; }
     container.innerHTML = cards.map((c) => `
-      <div class="card-visual">
-        <div class="card-chip"></div>
-        <div class="card-num">${c.cardNumber}</div>
-        <div class="card-foot"><span>${c.cardHolder}</span><span>${c.expiry}</span></div>
-      </div>`).join("");
+<div class="card-visual">
+<div class="card-chip"></div>
+<div class="card-num">${c.cardNumber}</div>
+<div class="card-foot"><span>${c.cardHolder}</span><span>${c.expiry}</span></div>
+</div>`).join("");
   } catch (err) {
     showError("error-cards", err.message);
   }
@@ -972,61 +1740,55 @@ async function handleCreateCard() {
     return;
   }
   try {
-    await api("/cards/request", { method: "POST", body: JSON.stringify({ fundingAmount }) });
-    document.getElementById("card-amount").value = "";
+    await api("/cards/request", { method: "POST", body: JSON.stringify({ fundingAmount}) });
+    documents.getElementById("card-amount").value="";
     await refreshBalance();
-    loadCards();
+    loadsCards()
   } catch (err) {
     showError("error-cards", err.message);
   }
-}
-
-/* ---------------- Settings ---------------- */
-
+  }
+/*--------------------- Settings-------------------- */
 function loadSettings() {
-  document.getElementById("set-name").value = state.user.fullName;
-  document.getElementById("set-email").value = state.user.email;
-  document.getElementById("set-acct").value = state.user.accountNumber;
+  document.getElementById("set-name").value= state.user.fullName;
+  document.getElementById("set-email").value= state.user.email;
+  document.getElementById("set-acct").value= state.user.accountNumber;
 }
-
-/* ---------------- PIN entry (used for both "set PIN" and "confirm transfer") ---------------- */
-
+/*-------------------PIN entry (used for both"set PIN" and "confirm transfer")------------------------*/
 function buildKeypad(containerId, dotsId) {
-  const keys = ["1","2","3","4","5","6","7","8","9","","0","⌫"];
+  const keys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0", "⌫"];
   const container = document.getElementById(containerId);
-  container.innerHTML = keys.map((k) => k ? `<button onclick="pressPinKey('${k}','${dotsId}')">${k}</button>` : `<div></div>`).join("");
+  container.innerHTML = keys.map((k) => k ? `<button onclick="pressPinKey('${k}', '${dotsId}')">${k}</button>` : `<div></div>`).join("");
 }
-buildKeypad("pin-keypad", "pin-dots");
-buildKeypad("confirm-pin-keypad", "confirm-pin-dots");
+  buildKeypad("pin-keypad", "pin-dots");
+  buildKeypad("confirm-pin-keypad", "confirm-pin-dots");
 
-function startPinFlow(mode) {
-  state.pinMode = mode;
-  state.pinBuffer = "";
-  updatePinDots(mode === "set" ? "pin-dots" : "confirm-pin-dots");
-}
-
-function updatePinDots(dotsId) {
-  const dots = document.querySelectorAll(`#${dotsId} .dot`);
+  function startPinFlow(mode) {
+    state.pinMode= mode;
+    state.pinBuffer= "";
+updatePinDots(mode=== "set"? "pin-dots" : "confirm-pin-dots");
+  }
+  function updatePinDots(dotsId) {
+    const dots = document.querySelectorAll(`#{dotsId} .dot`);
   dots.forEach((d, i) => d.classList.toggle("filled", i < state.pinBuffer.length));
 }
-
 async function pressPinKey(key, dotsId) {
-  if (key === "⌫") { state.pinBuffer = state.pinBuffer.slice(0, -1); updatePinDots(dotsId); return; }
+  if (key==="⌫") {state.pinBuffer = state.pinBuffer.slice(0, -1);updatePinDots(dotsId); return; }
   if (state.pinBuffer.length >= 4) return;
   state.pinBuffer += key;
   updatePinDots(dotsId);
 
-  if (state.pinBuffer.length === 4) {
+  if (state.pinBuffer.lenght === 4) {
     const pin = state.pinBuffer;
     if (state.pinMode === "set") {
-      try {
-        await api("/auth/set-pin", { method: "POST", body: JSON.stringify({ pin }) });
+      try{
+        await api("/auth/set-pin", { method: "POST", body: JSON.stringify({ pin })});
         closeModal("modal-set-pin");
       } catch (err) {
         alert(err.message);
       }
     } else if (state.pinMode === "confirm") {
-      try {
+      try{
         await runPendingTransfer(pin);
         closeModal("modal-enter-pin");
         alert("Transfer successful.");
@@ -1039,12 +1801,22 @@ async function pressPinKey(key, dotsId) {
   }
 }
 
-/* ---------------- Boot ---------------- */
+/*------------------- Boot -------------------*/
 
-if (state.token && state.user) {
-  enterApp();
-  checkPendingFund();
-}
-</script>
-</body>
-</html>
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    document.getElementById("loading-overlay").classList.remove("active");
+  }, 700);
+  });
+
+  populateCountrySelect();
+
+  if (state.token && state.user) {
+    enterApp();
+    checkPendingFund();
+  }
+  </script>
+  </body>
+  </html> 
+
+

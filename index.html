@@ -197,6 +197,9 @@
   .modal-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,0.55); display:none; align-items:flex-end; justify-content:center; z-index:50; }
   .modal-backdrop.active{ display:flex; }
   .modal-sheet{ background:var(--ink-soft); width:100%; max-width:480px; border-radius:20px 20px 0 0; padding:24px 22px 34px; border-top:1px solid var(--line-strong); }
+  #modal-fund .modal-sheet{ background:linear-gradient(160deg,#1B3A4C,#132B38 55%); border-top:1px solid var(--brass); }
+  #modal-fund .modal-sheet h3{ color:#F6F1E7; }
+  #modal-fund .field input{ background:#0F2836; }
   .modal-sheet h3{ font-family:'Fraunces',serif; font-size:19px; margin-bottom:18px; }
 
   .pin-dots{ display:flex; justify-content:center; gap:14px; margin:24px 0; }
@@ -1197,7 +1200,8 @@
 <option value="external">External bank account</option>
 </select>
 </div>
-<div class="field" id="ext-bank-field" style="display:none;"><label>Bank code</label><input type="text" id="transfer-bankcode" placeholder="e.g. 044 for Access Bank"></div>
+<div class="field" id="ext-bank-field" style="display:none;"><label>Bank name</label><input type="text" id="transfer-bankcode" placeholder="e.g. Chase, Bank of America, Wells Fargo"></div>
+<div class="field"><label>Account name</label><input type="text" id="transfer-accountname" placeholder="Recipient's full name"></div>
 <div class="field"><label>Account number</label><input type="text" id="transfer-account" placeholder="10-digit account number"></div>
 <div class="field"><label>Amount ($)</label><input type="number" id="transfer-amount" placeholder="0.00"></div>
 <div class="field"><label>Note (optional)</label><input type="text" id="transfer-note" placeholder="What's this for?"></div>
@@ -1556,6 +1560,7 @@ function openTransferModal() {
   document.getElementById("transfer-amount").value = "";
   document.getElementById("transfer-note").value = "";
   document.getElementById("transfer-bankcode").value = "";
+  document.getElementById("transfer-accountname").value = "";
   clearError("error-transfer");
   openModal("modal-transfer");
 }
@@ -1569,6 +1574,7 @@ function submitTransfer() {
   clearError("error-transfer");
   const type = document.getElementById("transfer-type").value;
   const account = document.getElementById("transfer-account").value.trim();
+  const accountName = document.getElementById("transfer-accountname").value.trim();
   const amount = document.getElementById("transfer-amount").value;
   const note = document.getElementById("transfer-note").value.trim();
   const bankCode = document.getElementById("transfer-bankcode").value.trim();
@@ -1578,18 +1584,18 @@ function submitTransfer() {
     return;
   }
 
-  state.pendingAction = { kind: "transfer", type, account, amount, note, bankCode };
+  state.pendingAction = { kind: "transfer", type, account, accountName, amount, note, bankCode };
   closeModal("modal-transfer");
   openModal("modal-enter-pin");
   startPinFlow("confirm");
 }
 
 async function runPendingTransfer(pin) {
-  const { type, account, amount, note, bankCode } = state.pendingAction;
+  const { type, account, accountName, amount, note, bankCode } = state.pendingAction;
   const path = type === "internal" ? "/wallet/transfer/internal" : "/wallet/transfer/external";
   const body = type === "internal"
     ? { toAccountNumber: account, amount, pin, note }
-    : { accountNumber: account, bankCode, amount, pin, note };
+    : { accountNumber: account, accountName, bankCode, bankName: bankCode, amount, pin, note };
 
   const data = await api(path, { method: "POST", body: JSON.stringify(body) });
   await refreshBalance();
@@ -1769,7 +1775,7 @@ function buildKeypad(containerId, dotsId) {
 updatePinDots(mode=== "set"? "pin-dots" : "confirm-pin-dots");
   }
   function updatePinDots(dotsId) {
-    const dots = document.querySelectorAll(`#{dotsId} .dot`);
+    const dots = document.querySelectorAll(`#${dotsId} .dot`);
   dots.forEach((d, i) => d.classList.toggle("filled", i < state.pinBuffer.length));
 }
 async function pressPinKey(key, dotsId) {
@@ -1778,7 +1784,7 @@ async function pressPinKey(key, dotsId) {
   state.pinBuffer += key;
   updatePinDots(dotsId);
 
-  if (state.pinBuffer.lenght === 4) {
+  if (state.pinBuffer.length === 4) {
     const pin = state.pinBuffer;
     if (state.pinMode === "set") {
       try{

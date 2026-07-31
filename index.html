@@ -33,6 +33,14 @@
   .display{ font-family:'Fraunces', serif; }
 
   #app{ max-width:480px; margin:0 auto; min-height:100vh; position:relative; padding-bottom:88px; }
+  @media (min-width:700px){
+    #app{ max-width:600px; }
+    .bottom-nav{ max-width:600px; }
+  }
+  @media (min-width:1100px){
+    #app{ max-width:720px; }
+    .bottom-nav{ max-width:720px; }
+  }
 
   /* ---------- Auth screens ---------- */
   .auth-wrap{ padding:48px 24px 24px; min-height:100vh; display:flex; flex-direction:column; }
@@ -170,7 +178,7 @@
   .empty-state{ text-align:center; padding:40px 20px; color:var(--text-dim); font-size:13.5px; }
 
   /* bottom nav */
-  .bottom-nav{ position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:480px; background:rgba(11,29,38,0.92); backdrop-filter: blur(10px); border-top:1px solid var(--line-strong); display:flex; justify-content:space-around; padding:12px 10px 18px; z-index:20; }
+  .bottom-nav{ position:fixed; bottom:0; left:0; right:0; margin:0 auto; width:100%; max-width:480px; background:rgba(11,29,38,0.92); backdrop-filter: blur(10px); border-top:1px solid var(--line-strong); display:flex; justify-content:space-around; padding:12px 10px 18px; z-index:20; }
   .nav-btn{ background:none; border:none; color:var(--text-dim); display:flex; flex-direction:column; align-items:center; gap:4px; font-size:10.5px; cursor:pointer; }
   .nav-btn.active{ color:var(--brass); }
   .nav-icon{ font-size:19px; }
@@ -203,6 +211,44 @@
   .modal-sheet h3{ font-family:'Fraunces',serif; font-size:19px; margin-bottom:18px; }
 
   .pin-dots{ display:flex; justify-content:center; gap:14px; margin:24px 0; }
+
+  /* ---------- Light BoA-style theme for post-login app screens ---------- */
+  #app.light-mode{ --text-dim:#5B6472; }
+  #app.light-mode #screen-dashboard,
+  #app.light-mode #screen-savings,
+  #app.light-mode #screen-bills,
+  #app.light-mode #screen-cards,
+  #app.light-mode #screen-history,
+  #app.light-mode #screen-settings,
+  #app.light-mode #screen-rewards,
+  #app.light-mode #screen-support{
+    background:#F4F6F9; color:#0B1D26; min-height:100vh;
+  }
+  #app.light-mode .topbar .greeting{ color:#5B6472; }
+  #app.light-mode .topbar .greeting strong{ color:#0B1D26; }
+  #app.light-mode .avatar{ background:#1746A2; color:#fff; }
+  .bank-banner{ background:linear-gradient(135deg,#1746A2,#0E2F73); color:#fff; padding:11px 18px; border-radius:10px; font-weight:700; font-size:13.5px; letter-spacing:0.03em; margin:14px 0 -2px; text-align:center; }
+  #app.light-mode .ledger-card{ background:#fff; border:1px solid #E3E7EE; box-shadow:0 1px 3px rgba(11,29,38,0.06); margin-top:14px; }
+  #app.light-mode .ledger-card::before{ display:none; }
+  #app.light-mode .ledger-label{ color:#5B6472; }
+  #app.light-mode .ledger-balance{ color:#0B1D26; }
+  #app.light-mode .ledger-acct{ color:#5B6472; }
+  #app.light-mode .ledger-acct span{ color:#1746A2; }
+  #app.light-mode .qa-icon{ background:#fff; border:1px solid #E3E7EE; color:#1746A2; box-shadow:0 1px 2px rgba(11,29,38,0.05); }
+  #app.light-mode .qa-label{ color:#5B6472; }
+  #app.light-mode .qa-btn{ color:#0B1D26; }
+  #app.light-mode .section-head h3{ color:#0B1D26; }
+  #app.light-mode .section-head a{ color:#1746A2; }
+  #app.light-mode .empty-state{ color:#8B93A1; }
+  #app.light-mode .panel, #app.light-mode .goal-card, #app.light-mode .bill-tile, #app.light-mode .card-visual{ background:#fff; border-color:#E3E7EE; color:#0B1D26; }
+  #app.light-mode .goal-figures{ color:#5B6472; }
+  #app.light-mode .goal-figures strong{ color:#0B1D26; }
+  #app.light-mode .progress-track{ background:#E3E7EE; }
+  #app.light-mode .bottom-nav{ background:rgba(255,255,255,0.95); border-top:1px solid #E3E7EE; }
+  #app.light-mode .nav-btn{ color:#8B93A1; }
+  #app.light-mode .nav-btn.active{ color:#1746A2; }
+  #app.light-mode .txn-row{ border-bottom-color:#E3E7EE; }
+  #app.light-mode .txn-date{ color:#8B93A1; }
   .pin-dots .dot{ width:14px; height:14px; border-radius:50%; border:1.5px solid var(--line-strong); }
   .pin-dots .dot.filled{ background:var(--brass); border-color:var(--brass); }
   .keypad{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
@@ -1012,6 +1058,7 @@
 <div id="login-error"></div>
 <div class="field"><label>Email</label><input type="email" id="login-email" placeholder="you@email.com"></div>
 <div class="field"><label>Password</label><input type="password" id="login-password" placeholder="••••••••"></div>
+<div style="text-align:right; margin:-8px 0 18px;"><a onclick="openForgotPassword()" style="font-size:13px; color:var(--brass); cursor:pointer; text-decoration:none;">Forgot password?</a></div>
 <button class="btn btn-primary" id="login-btn" onclick="handleLogin()">Log in</button>
 <div class="switch-auth">New here? <a onclick="showScreen('screen-signup')">Create an account</a></div>
 </div>
@@ -1063,6 +1110,7 @@
 <div class="avatar" id="dash-avatar">—</div>
 </div>
 <div style="padding:0 20px;">
+<div class="bank-banner">Meridian</div>
 <div class="ledger-card">
 <div class="ledger-label">Checking Account</div>
 <div class="ledger-balance amount" id="dash-balance">$0.00</div>
@@ -1077,6 +1125,12 @@
 <button class="qa-btn" onclick="showScreen('screen-savings')"><div class="qa-icon">🪙</div><div class="qa-label">Save</div></button>
 <button class="qa-btn" onclick="showScreen('screen-bills')"><div class="qa-icon">🧾</div><div class="qa-label">Bills</div></button>
 <button class="qa-btn" onclick="showScreen('screen-cards')"><div class="qa-icon">💳</div><div class="qa-label">Cards</div></button>
+</div>
+<div class="quick-actions" style="margin-top:14px;">
+<button class="qa-btn" onclick="openFundModal()"><div class="qa-icon">📥</div><div class="qa-label">Deposit</div></button>
+<button class="qa-btn" onclick="showScreen('screen-history')"><div class="qa-icon">📄</div><div class="qa-label">Statements</div></button>
+<button class="qa-btn" onclick="showScreen('screen-rewards')"><div class="qa-icon">🎁</div><div class="qa-label">Rewards</div></button>
+<button class="qa-btn" onclick="showScreen('screen-support')"><div class="qa-icon">💬</div><div class="qa-label">Support</div></button>
 </div>
 
 <div class="section-head"><h3>Recent activity</h3><a onclick="showScreen('screen-history')">See all</a></div>
@@ -1155,6 +1209,40 @@
 </div>
 </div>
 
+<!-- ============ REWARDS ============ -->
+<div class="screen" id="screen-rewards">
+<div class="topbar"><div class="greeting"><strong>Rewards</strong></div><div></div></div>
+<div style="padding:0 20px;">
+<div class="panel" style="text-align:center; padding:28px 18px;">
+<div style="font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim);" class="rewards-label">Reward points</div>
+<div class="amount rewards-points" style="font-size:34px; font-weight:600; margin:8px 0;">0</div>
+<div style="font-size:13px; color:var(--text-dim);" class="rewards-sub">Earn 1 point for every $1 you spend on bills and cards.</div>
+</div>
+<div class="section-head"><h3>How it works</h3></div>
+<div class="panel"><div style="font-size:13.5px; line-height:1.6;">Points build up automatically as you use your Meridian card and pay bills. Redeem them for cashback, statement credit, or gift cards once real transactions are live.</div></div>
+</div>
+</div>
+
+<!-- ============ SUPPORT ============ -->
+<div class="screen" id="screen-support">
+<div class="topbar"><div class="greeting"><strong>Support</strong></div><div></div></div>
+<div style="padding:0 20px;">
+<div class="panel">
+<div style="font-weight:600; margin-bottom:6px;">Chat with us</div>
+<div style="font-size:13px; color:var(--text-dim); margin-bottom:14px;">Our team typically replies within a few hours.</div>
+<button class="btn btn-primary" onclick="alert('Live chat is coming soon.')">Start a chat</button>
+</div>
+<div class="panel">
+<div style="font-weight:600; margin-bottom:6px;">Call us</div>
+<div style="font-size:13px; color:var(--text-dim);">1-800-MERIDIAN, available 24/7</div>
+</div>
+<div class="panel">
+<div style="font-weight:600; margin-bottom:6px;">Email</div>
+<div style="font-size:13px; color:var(--text-dim);">support@meridianbank.example</div>
+</div>
+</div>
+</div>
+
 <!-- bottom nav, only visible once logged in -->
 <div class="bottom-nav" id="bottom-nav" style="display:none;">
 <button class="nav-btn active" data-screen="screen-dashboard" onclick="navTo('screen-dashboard')"><div class="nav-icon">🏠</div>Home</button>
@@ -1224,6 +1312,16 @@
 <h3>Add to goal</h3>
 <div class="field"><label>Amount ($)</label><input type="number" id="fund-goal-amount" placeholder="0.00"></div>
 <button class="btn btn-primary" onclick="submitFundGoal()">Add funds</button>
+</div>
+</div>
+
+<div class="modal-backdrop" id="modal-forgot-password">
+<div class="modal-sheet">
+<h3>Reset your password</h3>
+<div id="error-forgot"></div>
+<div id="success-forgot"></div>
+<div class="field"><label>Email</label><input type="email" id="forgot-email" placeholder="you@email.com"></div>
+<button class="btn btn-primary" id="forgot-btn" onclick="submitForgotPassword()">Send reset link</button>
 </div>
 </div>
 
@@ -1319,6 +1417,33 @@ function navTo(id) {
 
 function openModal(id) { document.getElementById(id).classList.add("active"); }
 function closeModal(id) { document.getElementById(id).classList.remove("active"); }
+
+function openForgotPassword() {
+  document.getElementById("forgot-email").value = "";
+  clearError("error-forgot");
+  document.getElementById("success-forgot").innerHTML = "";
+  openModal("modal-forgot-password");
+}
+
+async function submitForgotPassword() {
+  clearError("error-forgot");
+  document.getElementById("success-forgot").innerHTML = "";
+  const email = document.getElementById("forgot-email").value.trim();
+  if (!email) {
+    showError("error-forgot", "Enter the email on your account.");
+    return;
+  }
+  const btn = document.getElementById("forgot-btn");
+  btn.disabled = true; btn.textContent = "Sending…";
+  try {
+    await api("/auth/forgot-password", { method: "POST", body: JSON.stringify({ email }) });
+    document.getElementById("success-forgot").innerHTML = '<div class="success-banner">If that email is on file, a reset link is on its way.</div>';
+  } catch (err) {
+    showError("error-forgot", err.message);
+  } finally {
+    btn.disabled = false; btn.textContent = "Send reset link";
+  }
+}
 document.querySelectorAll(".modal-backdrop").forEach((m) => {
   m.addEventListener("click", (e) => { if (e.target === m) m.classList.remove("active"); });
 });
@@ -1407,8 +1532,9 @@ function handleLogout() {
 }
 
 function enterApp() {
+  document.getElementById("app").classList.add("light-mode");
   document.getElementById("bottom-nav").style.display = "flex";
-  document.getElementById("dash-name").textContent = state.user.fullName.split("")[0];
+  document.getElementById("dash-name").textContent = state.user.fullName.split(" ")[0];
   document.getElementById("dash-avatar").textContent = state.user.fullName.charAt(0).toUpperCase();
   document.getElementById("dash-acct").textContent = state.user.accountNumber;
   document.getElementById("dash-balance").textContent = fmtNaira(state.user.balance);
